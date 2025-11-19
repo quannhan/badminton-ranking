@@ -29,7 +29,8 @@ app.add_middleware(
     allow_origins=[
         FRONTEND_URL,
         "http://localhost:4200",
-        "https://badminton-frontend-il508rmqu-quan-thais-projects-5e8ad6f4.vercel.app"
+        "https://badminton-frontend-l51wvcek9-quan-thais-projects-5e8ad6f4.vercel.app",
+        "https://badminton-frontend-rosy.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
