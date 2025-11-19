@@ -30,7 +30,7 @@ export class ReportMatchModalComponent implements OnInit {
     { value: 'DOUBLES_MIXED', label: 'Đôi Nam Nữ' }
   ];
 
-  stakeValues = [1, 2, 3, 5, 10];
+  stakeValues = [5, 10];
 
   constructor(
     private fb: FormBuilder,
@@ -46,7 +46,7 @@ export class ReportMatchModalComponent implements OnInit {
   initForm(): void {
     this.reportForm = this.fb.group({
       match_type: ['SINGLES', Validators.required],
-      stake_value: [2, Validators.required],
+      stake_value: [5, Validators.required],
       team1_player_ids: this.fb.array([this.fb.control(null, Validators.required)]),
       team2_player_ids: this.fb.array([this.fb.control(null, Validators.required)]),
       winning_team: [1, Validators.required],
@@ -129,7 +129,7 @@ export class ReportMatchModalComponent implements OnInit {
   closeModal(): void {
     this.reportForm.reset({
       match_type: 'SINGLES',
-      stake_value: 2,
+      stake_value: 5,
       winning_team: null
     });
     this.initForm();

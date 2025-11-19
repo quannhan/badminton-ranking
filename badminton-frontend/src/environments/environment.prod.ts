@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://badminton-api.onrender.com'
+  apiUrl: 'https://badminton-api-d0cc.onrender.com'
 };

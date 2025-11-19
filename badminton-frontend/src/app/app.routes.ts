@@ -6,6 +6,7 @@ import { RankingsComponent } from './components/rankings/rankings.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { ScoringRulesComponent } from './components/scoring-rules/scoring-rules.component';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 
@@ -15,6 +16,7 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'rankings', component: RankingsComponent, canActivate: [authGuard] },
+  { path: 'scoring-rules', component: ScoringRulesComponent, canActivate: [authGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'admin', component: AdminComponent, canActivate: [authGuard, adminGuard] },
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [authGuard] },

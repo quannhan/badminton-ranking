@@ -23,3 +23,124 @@
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
   }
 }
+
+/* Mobile Responsive for iPhone */
+@media (max-width: 428px) {
+  /* Tables - Stack layout for mobile */
+  .table-responsive {
+    font-size: 0.8rem;
+  }
+  
+  .table {
+    th, td {
+      padding: 0.5rem 0.25rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+    
+    th {
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+  }
+  
+  /* Hide less important columns on mobile */
+  .table th:nth-child(6),
+  .table td:nth-child(6),
+  .table th:nth-child(7),
+  .table td:nth-child(7) {
+    display: none;
+  }
+  
+  /* Badges smaller on mobile */
+  .badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  /* Button adjustments */
+  .btn-sm {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  /* Stats cards */
+  .card-body h3 {
+    font-size: 1.5rem;
+  }
+  
+  .card-body p {
+    font-size: 0.8rem;
+  }
+  
+  /* Avatar smaller */
+  img.rounded-circle {
+    width: 30px !important;
+    height: 30px !important;
+  }
+  
+  /* Header adjustments */
+  h2 {
+    font-size: 1.3rem;
+  }
+  
+  h3 {
+    font-size: 1.1rem;
+  }
+  
+  /* Modal adjustments */
+  .modal-dialog {
+    margin: 0.5rem;
+    max-width: calc(100% - 1rem);
+  }
+  
+  .modal-body {
+    padding: 1rem;
+  }
+  
+  .modal-lg {
+    max-width: calc(100% - 1rem);
+  }
+}
+
+@media (max-width: 390px) {
+  /* Even smaller for iPhone 12/13 Pro */
+  .table {
+    th, td {
+      padding: 0.4rem 0.2rem;
+      font-size: 0.7rem;
+    }
+  }
+  
+  .card-body h3 {
+    font-size: 1.3rem;
+  }
+  
+  h2 {
+    font-size: 1.2rem;
+  }
+  
+  /* Simplify button text */
+  .btn-sm .bi {
+    margin-right: 0;
+  }
+}
+
+/* Horizontal scroll for tables on mobile */
+@media (max-width: 768px) {
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    display: block;
+    width: 100%;
+  }
+  
+  .table {
+    min-width: 600px;
+  }
+  
+  /* Stack stats cards */
+  .col-md-3 {
+    margin-bottom: 0.5rem !important;
+  }
+}
