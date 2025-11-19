@@ -26,7 +26,11 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:4200")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL, "http://localhost:4200"],  # Support both production and local dev
+    allow_origins=[
+        FRONTEND_URL,
+        "http://localhost:4200",
+        "https://badminton-frontend-il508rmqu-quan-thais-projects-5e8ad6f4.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
