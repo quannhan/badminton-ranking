@@ -1,0 +1,110 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="text-center mb-4">
+      <h2>🏸 Đăng ký tài khoản</h2>
+      <p class="text-muted">Tham gia hệ thống ranking badminton</p>
+    </div>
+
+    <div *ngIf="success" class="alert alert-success" role="alert">
+      <h5 class="alert-heading">✅ Đăng ký thành công!</h5>
+      <p class="mb-0">Tài khoản của bạn đang chờ quản trị viên phê duyệt. Bạn sẽ nhận được thông báo khi tài khoản được kích hoạt.</p>
+      <hr>
+      <p class="mb-0">
+        <a routerLink="/login" class="alert-link">Quay lại trang đăng nhập</a>
+      </p>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{ error }}
+      <button type="button" class="btn-close" (click)="error=''" aria-label="Close"></button>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="username" class="form-label">Tên đăng nhập *</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="username" 
+            formControlName="username"
+            [class.is-invalid]="submitted && f['username'].errors">
+          <div *ngIf="submitted && f['username'].errors" class="invalid-feedback">
+            <div *ngIf="f['username'].errors['required']">Bắt buộc</div>
+            <div *ngIf="f['username'].errors['minlength']">Tối thiểu 3 ký tự</div>
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="display_name" class="form-label">Tên hiển thị *</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="display_name" 
+            formControlName="display_name"
+            [class.is-invalid]="submitted && f['display_name'].errors">
+          <div *ngIf="submitted && f['display_name'].errors" class="invalid-feedback">
+            Bắt buộc
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email *</label>
+        <input 
+          type="email" 
+          class="form-control" 
+          id="email" 
+          formControlName="email"
+          [class.is-invalid]="submitted && f['email'].errors">
+        <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+          <div *ngIf="f['email'].errors['required']">Bắt buộc</div>
+          <div *ngIf="f['email'].errors['email']">Email không hợp lệ</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Mật khẩu *</label>
+        <input 
+          type="password" 
+          class="form-control" 
+          id="password" 
+          formControlName="password"
+          [class.is-invalid]="submitted && f['password'].errors">
+        <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+          <div *ngIf="f['password'].errors['required']">Bắt buộc</div>
+          <div *ngIf="f['password'].errors['minlength']">Tối thiểu 6 ký tự</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="phone_number" class="form-label">Số điện thoại</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="phone_number" 
+            formControlName="phone_number">
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="level" class="form-label">Trình độ *</label>
+          <select class="form-select" id="level" formControlName="level">
+            <option value="C">C - Người mới</option>
+            <option value="B">B - Trung bình</option>
+            <option value="A">A - Nâng cao</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 mb-3" [disabled]="loading">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+        Đăng ký
+      </button>
+
+      <div class="text-center">
+        <p class="mb-0">Đã có tài khoản? <a routerLink="/login" class="text-decoration-none">Đăng nhập</a></p>
+      </div>
+    </form>
+  </div>
+</div>

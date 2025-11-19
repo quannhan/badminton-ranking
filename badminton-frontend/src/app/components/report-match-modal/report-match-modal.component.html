@@ -1,0 +1,97 @@
+<div class="modal" [class.show]="show" [style.display]="show ? 'block' : 'none'">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Báo Cáo Kết Quả Trận Đấu</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+        <form [formGroup]="reportForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Loại trận đấu</label>
+              <select class="form-select" formControlName="match_type">
+                <option *ngFor="let type of matchTypes" [value]="type.value">
+                  {{ type.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Điểm cược</label>
+              <select class="form-select" formControlName="stake_value">
+                <option *ngFor="let stake of stakeValues" [value]="stake">
+                  {{ stake }} điểm
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Team 1</label>
+              <div formArrayName="team1_player_ids">
+                <div *ngFor="let control of team1Players.controls; let i = index" class="mb-2">
+                  <select class="form-select" [formControlName]="i">
+                    <option [value]="null">Chọn người chơi {{ i + 1 }}</option>
+                    <option *ngFor="let user of allUsers" [value]="user.user_id">
+                      {{ user.display_name }} ({{ user.level }})
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Team 2</label>
+              <div formArrayName="team2_player_ids">
+                <div *ngFor="let control of team2Players.controls; let i = index" class="mb-2">
+                  <select class="form-select" [formControlName]="i">
+                    <option [value]="null">Chọn người chơi {{ i + 1 }}</option>
+                    <option *ngFor="let user of allUsers" [value]="user.user_id">
+                      {{ user.display_name }} ({{ user.level }})
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Đội thắng</label>
+            <select class="form-select" formControlName="winning_team">
+              <option [value]="null">Chọn đội thắng</option>
+              <option [value]="1">Team 1</option>
+              <option [value]="2">Team 2</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Ghi chú (tùy chọn)</label>
+            <textarea class="form-control" formControlName="notes" rows="2" placeholder="Nhập ghi chú về trận đấu..."></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Link YouTube (tùy chọn)</label>
+            <input type="url" class="form-control" formControlName="match_video_url" placeholder="https://youtube.com/watch?v=...">
+            <small class="text-muted">Đính kèm link video trận đấu trên YouTube</small>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">
+              Hủy
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="loading || reportForm.invalid">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+              Báo Cáo
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" [class.show]="show" *ngIf="show" (click)="closeModal()"></div>

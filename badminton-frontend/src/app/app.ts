@@ -1,0 +1,44 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterOutlet, RouterLink } from '@angular/router';
+import { AuthService } from './services/auth.service';
+import { User } from './models/user.model';
+
+@Component({
+  selector: 'app-root',
+  imports: [CommonModule, RouterOutlet, RouterLink],
+  templateUrl: './app.html',
+  styleUrl: './app.scss'
+})
+export class App implements OnInit {
+  title = 'Badminton Ranking';
+  currentUser: User | null = null;
+
+  constructor(
+    public authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.authService.currentUser.subscribe((user: User | null) => {
+      this.currentUser = user;
+    });
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
+  getAvatarUrl(): string {
+    console.log('Navbar - currentUser.avatar:', this.currentUser?.avatar?.substring(0, 50));
+    console.log('Navbar - currentUser.gender:', this.currentUser?.gender);
+    if (this.currentUser?.avatar) {
+      return this.currentUser.avatar;
+    }
+    return this.currentUser?.gender === 'F' 
+      ? '/assets/avatars/avatar_female.jpg' 
+      : '/assets/avatars/avatar_male.png';
+  }
+}
+ 

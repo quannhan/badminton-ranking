@@ -1,0 +1,525 @@
+﻿<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="mb-3">Chào mừng, {{ currentUser?.display_name }}! 👋</h2>
+        <p class="text-muted">Level: <span class="badge" [ngClass]="getLevelBadgeClass(currentUser?.level || 'C')">{{ currentUser?.level }}</span></p>
+      </div>
+      <button class="btn btn-primary" (click)="openReportMatchModal()">
+        <i class="bi bi-plus-circle"></i> Báo Cáo Kết Quả
+      </button>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-3 col-sm-6 mb-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h3 class="text-primary">{{ currentUser?.total_points || 0 }}</h3>
+          <p class="text-muted mb-0">Tổng điểm</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h3 class="text-success">{{ currentUser?.singles_points || 0 }}</h3>
+          <p class="text-muted mb-0">Điểm đơn</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h3 class="text-info">{{ currentUser?.doubles_points || 0 }}</h3>
+          <p class="text-muted mb-0">Điểm đôi</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h3 class="text-warning">{{ allUsers.length }}</h3>
+          <p class="text-muted mb-0">Thành viên</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Completed Matches This Month -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h3 class="mb-3">Kết Quả Trận Đấu Gần Đây (Tháng {{ getCurrentMonth() }})</h3>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Loại</th>
+              <th>Team 1</th>
+              <th>Team 2</th>
+              <th>Điểm</th>
+              <th>Trạng thái</th>
+              <th>Thời gian</th>
+              <th>Ghi chú</th>
+              <th>Video</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let match of completedMatches">
+              <td>
+                <span class="badge bg-info">{{ getMatchTypeLabel(match.match_type) }}</span>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div>
+                    <span *ngFor="let player of match.players; let last = last">
+                      <span *ngIf="player.team === 1">
+                        {{ player.display_name }}<span *ngIf="!last && getTeamPlayers(match, 1).length > 1">, </span>
+                      </span>
+                    </span>
+                  </div>
+                  <span *ngIf="getTeamResult(match, 1) === 'WIN'" class="badge bg-success ms-2">WIN</span>
+                  <span *ngIf="getTeamResult(match, 1) === 'LOSE'" class="badge bg-danger ms-2">LOSE</span>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div>
+                    <span *ngFor="let player of match.players; let last = last">
+                      <span *ngIf="player.team === 2">
+                        {{ player.display_name }}<span *ngIf="!last && getTeamPlayers(match, 2).length > 1">, </span>
+                      </span>
+                    </span>
+                  </div>
+                  <span *ngIf="getTeamResult(match, 2) === 'WIN'" class="badge bg-success ms-2">WIN</span>
+                  <span *ngIf="getTeamResult(match, 2) === 'LOSE'" class="badge bg-danger ms-2">LOSE</span>
+                </div>
+              </td>
+              <td>{{ match.stake_value }}</td>
+              <td>
+                <span class="badge" [ngClass]="getStatusBadgeClass(match.status)">
+                  {{ match.status }}
+                </span>
+              </td>
+              <td>{{ match.created_at | date:'dd/MM/yy HH:mm' }}</td>
+              <td>
+                <span *ngIf="match.notes" class="text-truncate d-inline-block" style="max-width: 200px;" [title]="match.notes">
+                  {{ match.notes }}
+                </span>
+              </td>
+              <td>
+                <a *ngIf="match.match_video_url" [href]="match.match_video_url" target="_blank" class="btn btn-sm btn-danger">
+                  <i class="bi bi-youtube"></i> Xem
+                </a>
+              </td>
+            </tr>
+            <tr *ngIf="completedMatches.length === 0">
+              <td colspan="8" class="text-center text-muted">Chưa có trận đấu nào trong tháng này</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pending Matches This Month (Created by Admin) -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h3 class="mb-3">Danh Sách Kèo Đấu Trong Tháng Này (Tháng {{ getCurrentMonth() }})</h3>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Loại</th>
+              <th>Team 1</th>
+              <th>Team 2</th>
+              <th>Điểm</th>
+              <th>Trạng thái</th>
+              <th>Người tạo</th>
+              <th>Thời gian</th>
+              <th>Ghi chú</th>
+              <th *ngIf="currentUser?.is_admin || isUserInAnyMatch()">Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let match of pendingMatches">
+              <td>
+                <span class="badge bg-info">{{ getMatchTypeLabel(match.match_type) }}</span>
+              </td>
+              <td>
+                <span *ngFor="let player of match.players">
+                  <span *ngIf="player.team === 1">
+                    {{ player.display_name }}
+                    <span *ngIf="player.result !== 'PENDING'" class="badge badge-sm" 
+                          [class.bg-success]="player.result === 'WIN'"
+                          [class.bg-danger]="player.result === 'LOSE'">
+                      {{ player.result }}
+                    </span>
+                    <br>
+                  </span>
+                </span>
+              </td>
+              <td>
+                <span *ngFor="let player of match.players">
+                  <span *ngIf="player.team === 2">
+                    {{ player.display_name }}
+                    <span *ngIf="player.result !== 'PENDING'" class="badge badge-sm" 
+                          [class.bg-success]="player.result === 'WIN'"
+                          [class.bg-danger]="player.result === 'LOSE'">
+                      {{ player.result }}
+                    </span>
+                    <br>
+                  </span>
+                </span>
+              </td>
+              <td>{{ match.stake_value }}</td>
+              <td>
+                <span class="badge" [ngClass]="getStatusBadgeClass(match.status)">
+                  {{ match.status }}
+                </span>
+              </td>
+              <td>{{ match.reporter_name }}</td>
+              <td>{{ match.created_at | date:'dd/MM/yy HH:mm' }}</td>
+              <td>
+                <span *ngIf="match.notes" class="text-truncate d-inline-block" style="max-width: 200px;" [title]="match.notes">
+                  {{ match.notes }}
+                </span>
+              </td>
+              <td *ngIf="currentUser?.is_admin">
+                <button 
+                  *ngIf="match.status === 'APPROVED' && isMatchPending(match)"
+                  class="btn btn-sm btn-primary me-2"
+                  (click)="openUpdateResultModal(match)">
+                  <i class="bi bi-pencil"></i> Cập nhật kết quả
+                </button>
+                <span *ngIf="match.status === 'PENDING'" class="badge bg-warning">
+                  Đang chờ duyệt
+                </span>
+              </td>
+              <td *ngIf="!currentUser?.is_admin && isUserInMatch(match)">
+                <button 
+                  *ngIf="match.status === 'APPROVED' && isMatchPending(match)"
+                  class="btn btn-sm btn-warning"
+                  (click)="openReportResultModal(match)">
+                  <i class="bi bi-flag"></i> Báo cáo kết quả
+                </button>
+                <span *ngIf="match.status === 'PENDING'" class="badge bg-info">
+                  Đã báo cáo, chờ duyệt
+                </span>
+              </td>
+            </tr>
+            <tr *ngIf="pendingMatches.length === 0">
+              <td [attr.colspan]="(currentUser?.is_admin || isUserInAnyMatch()) ? 9 : 8" class="text-center text-muted">Chưa có kèo đấu nào trong tháng này</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <h3 class="mb-3">Bảng Xếp Hạng</h3>
+      
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Đang tải...</span>
+        </div>
+      </div>
+
+      <div *ngIf="!loading" class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Tên</th>
+              <th>Level</th>
+              <th>Tổng điểm</th>
+              <th>Điểm đơn</th>
+              <th>Điểm đôi</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of allUsers; let i = index" style="cursor: pointer;">
+              <td>{{ i + 1 }}</td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <img 
+                    [src]="getAvatarUrl(user)" 
+                    [alt]="user.display_name"
+                    class="rounded-circle me-2"
+                    style="width: 40px; height: 40px; object-fit: cover;"
+                  >
+                  <span>{{ user.display_name }}</span>
+                  <span class="badge bg-secondary ms-2" *ngIf="user.is_admin">Admin</span>
+                </div>
+              </td>
+              <td>
+                <span class="badge" [ngClass]="getLevelBadgeClass(user.level)">
+                  {{ user.level }}
+                </span>
+              </td>
+              <td><strong>{{ user.total_points }}</strong></td>
+              <td>{{ user.singles_points }}</td>
+              <td>{{ user.doubles_points }}</td>
+              <td>
+                <button *ngIf="user.user_id !== currentUser?.user_id" class="btn btn-sm btn-outline-primary" (click)="viewUserProfile(user)">
+                  <i class="bi bi-eye"></i> Xem
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Report Match Modal -->
+<app-report-match-modal 
+  [show]="showReportMatchModal"
+  (close)="closeReportMatchModal()"
+  (matchReported)="refreshCurrentUser(); loadCompletedMatches(); loadPendingMatches(); loadAllUsers(); closeReportMatchModal()">
+</app-report-match-modal>
+
+<!-- Update Match Result Modal -->
+<div class="modal" [class.show]="showUpdateResultModal" [style.display]="showUpdateResultModal ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cập nhật kết quả trận đấu</h5>
+        <button type="button" class="btn-close" (click)="closeUpdateResultModal()"></button>
+      </div>
+      <div class="modal-body" *ngIf="selectedMatch">
+        <div class="mb-3">
+          <p><strong>Loại:</strong> {{ getMatchTypeLabel(selectedMatch.match_type) }}</p>
+          <p><strong>Điểm:</strong> {{ selectedMatch.stake_value }}</p>
+        </div>
+        
+        <div class="mb-3">
+          <h6>Team 1:</h6>
+          <ul>
+            <li *ngFor="let player of getTeamPlayers(selectedMatch, 1)">
+              {{ player.display_name }}
+            </li>
+          </ul>
+        </div>
+        
+        <div class="mb-3">
+          <h6>Team 2:</h6>
+          <ul>
+            <li *ngFor="let player of getTeamPlayers(selectedMatch, 2)">
+              {{ player.display_name }}
+            </li>
+          </ul>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label"><strong>Đội thắng:</strong></label>
+          <select class="form-select" [(ngModel)]="updateWinningTeam" required>
+            <option [value]="null">-- Chọn đội thắng --</option>
+            <option [value]="1">Team 1</option>
+            <option [value]="2">Team 2</option>
+          </select>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Link YouTube (tùy chọn)</label>
+          <input type="url" class="form-control" [(ngModel)]="updateVideoUrl" placeholder="https://youtube.com/watch?v=...">
+          <small class="text-muted">Đính kèm link video trận đấu trên YouTube</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeUpdateResultModal()">Hủy</button>
+        <button type="button" class="btn btn-primary" (click)="submitUpdateResult()" [disabled]="!updateWinningTeam">
+          Cập nhật
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" [class.show]="showUpdateResultModal" *ngIf="showUpdateResultModal"></div>
+
+<!-- Report Match Result Modal (for users) -->
+<div class="modal" [class.show]="showReportResultModal" [style.display]="showReportResultModal ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Báo cáo kết quả trận đấu</h5>
+        <button type="button" class="btn-close" (click)="closeReportResultModal()"></button>
+      </div>
+      <div class="modal-body" *ngIf="selectedMatch">
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle"></i> Kết quả sẽ được gửi đến admin để kiểm tra và duyệt.
+        </div>
+        
+        <div class="mb-3">
+          <p><strong>Loại:</strong> {{ getMatchTypeLabel(selectedMatch.match_type) }}</p>
+          <p><strong>Điểm:</strong> {{ selectedMatch.stake_value }}</p>
+        </div>
+        
+        <div class="mb-3">
+          <h6>Team 1:</h6>
+          <ul>
+            <li *ngFor="let player of getTeamPlayers(selectedMatch, 1)">
+              {{ player.display_name }}
+            </li>
+          </ul>
+        </div>
+        
+        <div class="mb-3">
+          <h6>Team 2:</h6>
+          <ul>
+            <li *ngFor="let player of getTeamPlayers(selectedMatch, 2)">
+              {{ player.display_name }}
+            </li>
+          </ul>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label"><strong>Đội thắng:</strong></label>
+          <select class="form-select" [(ngModel)]="reportWinningTeam" required>
+            <option [value]="null">-- Chọn đội thắng --</option>
+            <option [value]="1">Team 1</option>
+            <option [value]="2">Team 2</option>
+          </select>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Link YouTube (tùy chọn)</label>
+          <input type="url" class="form-control" [(ngModel)]="reportVideoUrl" placeholder="https://youtube.com/watch?v=...">
+          <small class="text-muted">Đính kèm link video trận đấu trên YouTube</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeReportResultModal()">Hủy</button>
+        <button type="button" class="btn btn-warning" (click)="submitReportResult()" [disabled]="!reportWinningTeam">
+          Báo cáo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" [class.show]="showReportResultModal" *ngIf="showReportResultModal"></div>
+
+<!-- User Profile Modal -->
+<div class="modal" [class.show]="showProfileModal" [style.display]="showProfileModal ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Thông tin người chơi</h5>
+        <button type="button" class="btn-close" (click)="closeProfileModal()"></button>
+      </div>
+      <div class="modal-body" *ngIf="selectedUser">
+        <div class="row mb-4">
+          <div class="col-md-4 text-center">
+            <img 
+              [src]="getAvatarUrl(selectedUser)" 
+              [alt]="selectedUser.display_name"
+              class="rounded-circle mb-3"
+              style="width: 120px; height: 120px; object-fit: cover;"
+            >
+            <h4>{{ selectedUser.display_name }}</h4>
+            <p class="text-muted">{{ selectedUser.email }}</p>
+            <span class="badge" [ngClass]="getLevelBadgeClass(selectedUser.level)">
+              Level {{ selectedUser.level }}
+            </span>
+          </div>
+          <div class="col-md-8">
+            <h5>Thống kê</h5>
+            <div class="row">
+              <div class="col-4 mb-3">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h4 class="text-primary">{{ selectedUser.total_points }}</h4>
+                    <small class="text-muted">Tổng điểm</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4 mb-3">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h4 class="text-success">{{ selectedUser.singles_points }}</h4>
+                    <small class="text-muted">Điểm đơn</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4 mb-3">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h4 class="text-info">{{ selectedUser.doubles_points }}</h4>
+                    <small class="text-muted">Điểm đôi</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <h5 class="mb-3">Lịch sử đối đấu {{selectedUser.display_name}} với {{ currentUser?.display_name }}</h5>
+        
+        <div *ngIf="loadingMatchHistory" class="text-center py-3">
+          <div class="spinner-border spinner-border-sm text-primary" role="status">
+            <span class="visually-hidden">Đang tải...</span>
+          </div>
+        </div>
+
+        <div *ngIf="!loadingMatchHistory && matchHistory.length === 0" class="alert alert-info">
+          Chưa có lịch sử đối đấu
+        </div>
+
+        <div *ngIf="!loadingMatchHistory && matchHistory.length > 0">
+          <div class="mb-3">
+            <strong>Đơn:</strong> {{ matchHistoryStats.singles.wins }} thắng - {{ matchHistoryStats.singles.losses }} thua
+            | <strong>Đôi:</strong> {{ matchHistoryStats.doubles.wins }} thắng - {{ matchHistoryStats.doubles.losses }} thua
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-sm table-hover">
+              <thead>
+                <tr>
+                  <th>Ngày</th>
+                  <th>Loại</th>
+                  <th>Bạn</th>
+                  <th>{{ selectedUser?.display_name }}</th>
+                  <th>Điểm</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let match of matchHistory">
+                  <td>{{ match.created_at | date:'dd/MM/yy' }}</td>
+                  <td>
+                    <span class="badge bg-info">{{ getMatchTypeLabel(match.match_type) }}</span>
+                  </td>
+                  <td>
+                    <span class="badge" 
+                          [class.bg-success]="match.myResult === 'WIN'"
+                          [class.bg-danger]="match.myResult === 'LOSE'">
+                      {{ match.myResult === 'WIN' ? 'Thắng' : 'Thua' }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge" 
+                          [class.bg-danger]="match.myResult === 'WIN'"
+                          [class.bg-success]="match.myResult === 'LOSE'">
+                      {{ match.myResult === 'WIN' ? 'Thua' : 'Thắng' }}
+                    </span>
+                  </td>
+                  <td>{{ match.stake_value }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeProfileModal()">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" [class.show]="showProfileModal" *ngIf="showProfileModal"></div>
+

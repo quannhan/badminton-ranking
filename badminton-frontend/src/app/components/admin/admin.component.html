@@ -1,0 +1,334 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Quản trị Hệ Thống</h2>
+
+  <!-- Alert messages -->
+  <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ error }}
+    <button type="button" class="btn-close" (click)="error=''"></button>
+  </div>
+
+  <div *ngIf="success" class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ success }}
+    <button type="button" class="btn-close" (click)="success=''"></button>
+  </div>
+
+  <!-- Super Admin Controls -->
+  <div class="card mb-4 border-warning" *ngIf="isSuperAdmin()">
+    <div class="card-header bg-warning text-dark">
+      <h5 class="mb-0">⚠️ Super Admin Controls</h5>
+    </div>
+    <div class="card-body">
+      <button class="btn btn-danger" (click)="openResetPointsModal()">
+        <i class="bi bi-arrow-counterclockwise"></i> Reset Tất Cả Điểm
+      </button>
+      <small class="text-muted ms-3">Xóa toàn bộ điểm của tất cả thành viên</small>
+    </div>
+  </div>
+
+  <!-- Password Reset Requests (Super Admin Only) -->
+  <div class="card mb-4" *ngIf="isSuperAdmin() && passwordResetRequests.length > 0">
+    <div class="card-header bg-info text-white">
+      <h5 class="mb-0">Yêu Cầu Reset Mật Khẩu ({{ passwordResetRequests.length }})</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Tên</th>
+              <th>Ngày yêu cầu</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let request of passwordResetRequests">
+              <td>{{ request.email }}</td>
+              <td>{{ request.display_name }}</td>
+              <td>{{ request.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>
+                <button class="btn btn-sm btn-success me-2" (click)="openPasswordResetModal(request)">
+                  <i class="bi bi-key"></i> Cấp mật khẩu mới
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="rejectPasswordReset(request.request_id)">
+                  <i class="bi bi-x-circle"></i> Từ chối
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pending Users -->
+  <div class="card mb-4" *ngIf="pendingUsers.length > 0">
+    <div class="card-header bg-danger text-white">
+      <h5 class="mb-0">Tài Khoản Chờ Duyệt ({{ pendingUsers.length }})</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Tên</th>
+              <th>Ngày đăng ký</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of pendingUsers">
+              <td>{{ user.email }}</td>
+              <td>{{ user.display_name }}</td>
+              <td>{{ user.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>
+                <button class="btn btn-sm btn-success me-2" (click)="approveUser(user.user_id)">
+                  <i class="bi bi-check-circle"></i> Duyệt
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="rejectUser(user.user_id)">
+                  <i class="bi bi-x-circle"></i> Từ chối
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Match Form -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Tạo Kèo Mới</h5>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="createMatchForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Loại trận đấu</label>
+            <select class="form-select" formControlName="match_type">
+              <option *ngFor="let type of matchTypes" [value]="type.value">
+                {{ type.label }}
+              </option>
+            </select>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Điểm cược</label>
+            <select class="form-select" formControlName="stake_value">
+              <option *ngFor="let stake of stakeValues" [value]="stake">
+                {{ stake }} điểm
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Team 1</label>
+            <div formArrayName="team1_player_ids">
+              <div *ngFor="let control of team1Players.controls; let i = index" class="mb-2">
+                <select class="form-select" [formControlName]="i">
+                  <option [value]="null">Chọn người chơi {{ i + 1 }}</option>
+                  <option *ngFor="let user of allUsers" [value]="user.user_id">
+                    {{ user.display_name }} ({{ user.level }})
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Team 2</label>
+            <div formArrayName="team2_player_ids">
+              <div *ngFor="let control of team2Players.controls; let i = index" class="mb-2">
+                <select class="form-select" [formControlName]="i">
+                  <option [value]="null">Chọn người chơi {{ i + 1 }}</option>
+                  <option *ngFor="let user of allUsers" [value]="user.user_id">
+                    {{ user.display_name }} ({{ user.level }})
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Kết quả (tùy chọn - để trống nếu chưa đấu)</label>
+          <select class="form-select" formControlName="winning_team">
+            <option [value]="null">Chưa xác định (chờ đấu)</option>
+            <option [value]="1">Team 1 Thắng</option>
+            <option [value]="2">Team 2 Thắng</option>
+          </select>
+          <small class="text-muted">
+            Nếu chọn kết quả, điểm sẽ được cộng ngay. Nếu để trống, kèo sẽ ở trạng thái PENDING.
+          </small>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Ghi chú (tùy chọn)</label>
+          <textarea class="form-control" formControlName="notes" rows="2" placeholder="Nhập ghi chú về trận đấu..."></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Link YouTube (tùy chọn)</label>
+          <input type="url" class="form-control" formControlName="match_video_url" placeholder="https://youtube.com/watch?v=...">
+          <small class="text-muted">Đính kèm link video trận đấu trên YouTube</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="loading || createMatchForm.invalid">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+          Tạo Kèo
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pending Matches -->
+  <div class="card">
+    <div class="card-header bg-warning">
+      <h5 class="mb-0">Kèo Chờ Duyệt ({{ pendingMatches.length }})</h5>
+    </div>
+    <div class="card-body">
+      <div *ngIf="pendingMatches.length === 0" class="text-center text-muted py-4">
+        Không có kèo nào chờ duyệt
+      </div>
+
+      <div *ngFor="let match of pendingMatches" class="card mb-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h6 class="card-title">
+                <span class="badge bg-info">{{ getMatchTypeLabel(match.match_type) }}</span>
+                <span class="badge bg-secondary ms-2">{{ match.stake_value }} điểm</span>
+              </h6>
+              <p class="mb-2">
+                <strong>Người báo cáo:</strong> {{ match.reporter_name }}<br>
+                <strong>Thời gian:</strong> {{ match.created_at | date:'dd/MM/yyyy HH:mm' }}
+              </p>
+              <div class="row">
+                <div class="col-6">
+                  <strong>Team 1:</strong>
+                  <ul class="list-unstyled">
+                    <li *ngFor="let player of match.players">
+                      <span *ngIf="player.team === 1">
+                        {{ player.display_name }}
+                        <span class="badge" 
+                              [class.bg-success]="player.result === 'WIN'"
+                              [class.bg-danger]="player.result === 'LOSE'"
+                              [class.bg-secondary]="player.result === 'PENDING'">
+                          {{ player.result }}
+                        </span>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-6">
+                  <strong>Team 2:</strong>
+                  <ul class="list-unstyled">
+                    <li *ngFor="let player of match.players">
+                      <span *ngIf="player.team === 2">
+                        {{ player.display_name }}
+                        <span class="badge" 
+                              [class.bg-success]="player.result === 'WIN'"
+                              [class.bg-danger]="player.result === 'LOSE'"
+                              [class.bg-secondary]="player.result === 'PENDING'">
+                          {{ player.result }}
+                        </span>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="btn-group-vertical">
+              <button class="btn btn-sm btn-success mb-2" (click)="approveMatch(match.match_id)">
+                <i class="bi bi-check-circle"></i> Duyệt
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="rejectMatch(match.match_id)">
+                <i class="bi bi-x-circle"></i> Từ chối
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reset Points Modal -->
+<div class="modal" [class.show]="showResetPointsModal" [style.display]="showResetPointsModal ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">⚠️ Xác Nhận Reset Điểm</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeResetPointsModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning">
+          <strong>Cảnh báo:</strong> Hành động này sẽ xóa toàn bộ điểm của tất cả thành viên và không thể hoàn tác!
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Nhập mật khẩu để xác nhận:</label>
+          <input 
+            type="password" 
+            class="form-control" 
+            [(ngModel)]="resetPassword"
+            placeholder="Mật khẩu của bạn"
+            (keyup.enter)="confirmResetPoints()">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeResetPointsModal()">Hủy</button>
+        <button type="button" class="btn btn-danger" (click)="confirmResetPoints()" [disabled]="!resetPassword">
+          <i class="bi bi-arrow-counterclockwise"></i> Reset Điểm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" [class.show]="showResetPointsModal" *ngIf="showResetPointsModal"></div>
+
+<!-- Password Reset Modal -->
+<div class="modal" [class.show]="showPasswordResetModal" [style.display]="showPasswordResetModal ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title">Cấp Mật Khẩu Mới</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closePasswordResetModal()"></button>
+      </div>
+      <div class="modal-body" *ngIf="selectedResetRequest">
+        <p><strong>Người dùng:</strong> {{ selectedResetRequest.display_name }}</p>
+        <p><strong>Email:</strong> {{ selectedResetRequest.email }}</p>
+        
+        <div class="alert alert-info">
+          <strong>Mật khẩu tạm thời:</strong> <code class="fs-5">{{ newTempPassword }}</code>
+          <button class="btn btn-sm btn-outline-primary ms-2" (click)="newTempPassword = generateTempPassword()">
+            <i class="bi bi-arrow-repeat"></i> Tạo lại
+          </button>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Hoặc nhập mật khẩu tùy chỉnh:</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            [(ngModel)]="newTempPassword"
+            placeholder="Nhập mật khẩu mới">
+        </div>
+        
+        <div class="alert alert-warning">
+          <small>Sau khi đăng nhập bằng mật khẩu này, người dùng sẽ bắt buộc phải đổi mật khẩu mới.</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closePasswordResetModal()">Hủy</button>
+        <button type="button" class="btn btn-success" (click)="approvePasswordReset()" [disabled]="!newTempPassword || loading">
+          <i class="bi bi-key"></i> Cấp mật khẩu
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" [class.show]="showPasswordResetModal" *ngIf="showPasswordResetModal"></div>

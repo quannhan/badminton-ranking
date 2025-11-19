@@ -1,0 +1,20 @@
+.card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  color: #333;
+  font-weight: 600;
+}
+
+input[type="file"] {
+  font-size: 0.9rem;
+}
+
+.row {
+  margin-bottom: 0;
+}
+
+.row + .row {
+  margin-top: 1rem;
+}

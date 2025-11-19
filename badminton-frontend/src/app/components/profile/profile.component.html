@@ -1,0 +1,99 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body text-center">
+          <h5 class="card-title mb-4">Avatar</h5>
+          <img 
+            [src]="getAvatarUrl()" 
+            [alt]="currentUser?.display_name"
+            class="rounded-circle mb-3"
+            style="width: 150px; height: 150px; object-fit: cover;"
+          >
+          
+          <div class="mb-3">
+            <input 
+              type="file" 
+              class="form-control" 
+              accept="image/*"
+              (change)="onFileSelected($event)"
+              [disabled]="uploading"
+            >
+            <small class="text-muted">JPG, PNG, GIF (Max 5MB)</small>
+          </div>
+
+          <button 
+            class="btn btn-primary w-100 mb-2" 
+            (click)="uploadAvatar()"
+            [disabled]="!selectedFile || uploading"
+          >
+            <span *ngIf="uploading" class="spinner-border spinner-border-sm me-2"></span>
+            {{ uploading ? 'Đang upload...' : 'Upload Avatar' }}
+          </button>
+
+          <button 
+            class="btn btn-outline-danger w-100" 
+            (click)="deleteAvatar()"
+            [disabled]="!currentUser?.avatar || uploading"
+          >
+            Xóa Avatar
+          </button>
+
+          <div *ngIf="uploadMessage" class="alert mt-3" 
+               [ngClass]="uploadMessage.includes('thành công') || uploadMessage.includes('Đã xóa') ? 'alert-success' : 'alert-danger'">
+            {{ uploadMessage }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Thông tin cá nhân</h5>
+          
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Tên hiển thị:</strong></div>
+            <div class="col-sm-8">{{ currentUser?.display_name }}</div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Email:</strong></div>
+            <div class="col-sm-8">{{ currentUser?.email }}</div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Level:</strong></div>
+            <div class="col-sm-8">
+              <span class="badge" [ngClass]="getLevelBadgeClass(currentUser?.level || 'C')">
+                {{ currentUser?.level }}
+              </span>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Tổng điểm:</strong></div>
+            <div class="col-sm-8">{{ currentUser?.total_points || 0 }}</div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Điểm đơn:</strong></div>
+            <div class="col-sm-8">{{ currentUser?.singles_points || 0 }}</div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-sm-4"><strong>Điểm đôi:</strong></div>
+            <div class="col-sm-8">{{ currentUser?.doubles_points || 0 }}</div>
+          </div>
+
+          <div class="row mb-3" *ngIf="currentUser?.is_admin">
+            <div class="col-sm-4"><strong>Vai trò:</strong></div>
+            <div class="col-sm-8">
+              <span class="badge bg-secondary">Admin</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

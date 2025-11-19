@@ -1,0 +1,118 @@
+<div class="rankings-container">
+  <div class="container">
+    <h2 class="mb-4">🏆 Bảng xếp hạng</h2>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Loại xếp hạng</label>
+            <select class="form-select" [(ngModel)]="selectedType" (change)="onFilterChange()">
+              <option *ngFor="let type of matchTypes" [value]="type.value">
+                {{ type.label }}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Trình độ</label>
+            <select class="form-select" [(ngModel)]="selectedLevel" (change)="onFilterChange()">
+              <option value="ALL">Tổng hợp</option>
+              <option *ngFor="let level of levels" [value]="level">
+                Level {{ level }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Đang tải...</span>
+      </div>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+    <!-- Overall Rankings -->
+    <div *ngIf="!loading && selectedType === 'overall' && overallRankings.length > 0" class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Hạng</th>
+                <th>Tên</th>
+                <th>Tổng điểm</th>
+                <th>Đơn</th>
+                <th>Đôi nam</th>
+                <th>Đôi nữ</th>
+                <th>Đôi nam nữ</th>
+                <th>Trận đấu</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ranking of overallRankings" [class]="getMedalClass(ranking.rank)">
+                <td>
+                  <strong>#{{ ranking.rank }}</strong>
+                  <span *ngIf="ranking.rank <= 3" class="ms-2">
+                    {{ ranking.rank === 1 ? '🥇' : ranking.rank === 2 ? '🥈' : '🥉' }}
+                  </span>
+                </td>
+                <td><strong>{{ ranking.display_name }}</strong></td>
+                <td><span class="badge bg-primary">{{ ranking.total_points }}</span></td>
+                <td>{{ ranking.singles_points }}</td>
+                <td>{{ ranking.doubles_men_points }}</td>
+                <td>{{ ranking.doubles_women_points }}</td>
+                <td>{{ ranking.doubles_mixed_points }}</td>
+                <td>{{ ranking.total_matches }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Type-specific Rankings -->
+    <div *ngIf="!loading && selectedType !== 'overall' && typeRankings.length > 0" class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Hạng</th>
+                <th>Tên</th>
+                <th>Điểm</th>
+                <th>Trận đấu</th>
+                <th>Thắng</th>
+                <th>Thua</th>
+                <th>Tỷ lệ thắng</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ranking of typeRankings" [class]="getMedalClass(ranking.rank)">
+                <td>
+                  <strong>#{{ ranking.rank }}</strong>
+                  <span *ngIf="ranking.rank <= 3" class="ms-2">
+                    {{ ranking.rank === 1 ? '🥇' : ranking.rank === 2 ? '🥈' : '🥉' }}
+                  </span>
+                </td>
+                <td><strong>{{ ranking.display_name }}</strong></td>
+                <td><span class="badge bg-primary">{{ ranking.points }}</span></td>
+                <td>{{ ranking.total_matches }}</td>
+                <td class="text-success">{{ ranking.wins }}</td>
+                <td class="text-danger">{{ ranking.losses }}</td>
+                <td>{{ (ranking.win_rate * 100).toFixed(1) }}%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && ((selectedType === 'overall' && overallRankings.length === 0) || (selectedType !== 'overall' && typeRankings.length === 0))" 
+         class="alert alert-info">
+      Chưa có dữ liệu xếp hạng cho bộ lọc này.
+    </div>
+  </div>
+</div>

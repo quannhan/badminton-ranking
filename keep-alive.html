@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keep Backend Alive - Badminton Ranking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .auto-ping {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏸 Backend Keep-Alive</h1>
+        <p>Script này giúp giữ backend luôn hoạt động (không bị sleep) bằng cách ping mỗi 10 phút.</p>
+        
+        <div id="status" class="status info">
+            Nhấn "Start Auto Ping" để bắt đầu
+        </div>
+
+        <button id="startBtn" onclick="startAutoPing()">Start Auto Ping</button>
+        <button id="stopBtn" onclick="stopAutoPing()" style="display:none; background:#dc3545;">Stop Auto Ping</button>
+        <button onclick="manualPing()" style="background:#28a745;">Manual Ping</button>
+
+        <div class="auto-ping">
+            <strong>💡 Cách dùng:</strong>
+            <ul>
+                <li>Mở trang này và để trình duyệt mở (không đóng tab)</li>
+                <li>Nhấn "Start Auto Ping" để bắt đầu tự động ping</li>
+                <li>Backend sẽ được ping mỗi 10 phút</li>
+                <li><strong>Lưu ý:</strong> Máy tính phải online và tab này phải mở</li>
+            </ul>
+            
+            <strong>🔄 Giải pháp tốt hơn:</strong>
+            <ol>
+                <li>Dùng <a href="https://cron-job.org" target="_blank">cron-job.org</a> (miễn phí)</li>
+                <li>Tạo job ping: <code>https://badminton-api.onrender.com/health</code></li>
+                <li>Cài đặt chạy mỗi 10 phút</li>
+            </ol>
+        </div>
+
+        <div style="margin-top: 20px; font-size: 12px; color: #666;">
+            <p><strong>Backend URL:</strong> <span id="apiUrl">https://badminton-api.onrender.com</span></p>
+            <p><strong>Ping count:</strong> <span id="pingCount">0</span></p>
+            <p><strong>Last ping:</strong> <span id="lastPing">-</span></p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://badminton-api.onrender.com'; // Thay đổi URL này khi deploy
+        let intervalId = null;
+        let pingCount = 0;
+
+        async function pingBackend() {
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                
+                pingCount++;
+                document.getElementById('pingCount').textContent = pingCount;
+                document.getElementById('lastPing').textContent = new Date().toLocaleString('vi-VN');
+                
+                showStatus('✅ Backend đang hoạt động: ' + data.status, 'success');
+            } catch (error) {
+                showStatus('❌ Lỗi kết nối: ' + error.message, 'error');
+            }
+        }
+
+        function startAutoPing() {
+            if (intervalId) return;
+            
+            // Ping ngay lập tức
+            pingBackend();
+            
+            // Sau đó ping mỗi 10 phút
+            intervalId = setInterval(pingBackend, 10 * 60 * 1000);
+            
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'inline-block';
+            showStatus('🔄 Auto ping đã bắt đầu (mỗi 10 phút)', 'info');
+        }
+
+        function stopAutoPing() {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+            
+            document.getElementById('startBtn').style.display = 'inline-block';
+            document.getElementById('stopBtn').style.display = 'none';
+            showStatus('⏸️ Auto ping đã dừng', 'info');
+        }
+
+        function manualPing() {
+            pingBackend();
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = 'status ' + type;
+        }
+
+        // Update API URL display
+        document.getElementById('apiUrl').textContent = API_URL;
+    </script>
+</body>
+</html>
