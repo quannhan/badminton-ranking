@@ -2,6 +2,7 @@ services:
   - type: web
     name: badminton-api
     env: python
+    runtime: python-3.12.0
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
@@ -13,3 +14,5 @@ services:
         value: HS256
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: 43200
+      - key: PYTHON_VERSION
+        value: 3.12.0
