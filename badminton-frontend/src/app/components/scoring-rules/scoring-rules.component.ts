@@ -11,10 +11,16 @@ import { CommonModule } from '@angular/common';
 export class ScoringRulesComponent {
   examples = [
     {
+      stakeValue: 2,
+      winnerPoints: 20,
+      loserPoints: 10,
+      description: 'Trận đấu kèo nước (mức thấp nhất)'
+    },
+    {
       stakeValue: 5,
       winnerPoints: 50,
       loserPoints: 25,
-      description: 'Trận đấu với điểm cược 5 (mức thấp)'
+      description: 'Trận đấu với điểm cược 5 (mức trung bình)'
     },
     {
       stakeValue: 10,

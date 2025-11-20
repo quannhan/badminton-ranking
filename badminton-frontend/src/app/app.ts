@@ -11,7 +11,7 @@ import { User } from './models/user.model';
   styleUrl: './app.scss'
 })
 export class App implements OnInit {
-  title = 'Badminton Ranking';
+  title = 'Metfone Badminton Ranking';
   currentUser: User | null = null;
 
   constructor(

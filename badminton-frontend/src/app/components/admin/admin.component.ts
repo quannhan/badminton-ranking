@@ -36,7 +36,11 @@ export class AdminComponent implements OnInit {
     { value: 'DOUBLES_MIXED', label: 'Đôi Nam Nữ' }
   ];
 
-  stakeValues = [5, 10];
+  stakeValues = [
+    { value: 2, label: '2 (Kèo nước)' },
+    { value: 5, label: '5' },
+    { value: 10, label: '10' }
+  ];
 
   constructor(
     private fb: FormBuilder,

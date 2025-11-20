@@ -4,7 +4,7 @@ $loginHtml = @'
 <div class="login-container">
   <div class="login-card">
     <div class="text-center mb-4">
-      <h2>🏸 Badminton Ranking</h2>
+      <h2>🏸 Metfone Badminton Ranking</h2>
       <p class="text-muted">Đăng nhập vào hệ thống</p>
     </div>
 

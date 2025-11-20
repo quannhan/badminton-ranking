@@ -12,10 +12,17 @@ body {
 .navbar-brand {
   font-weight: bold;
   font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  
+  img {
+    height: 40px;
+    margin-right: 10px;
+  }
 }
 
 .bg-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
 }
 
 /* Mobile Responsive - iPhone 12, 13 Pro, 14 Pro Max, 15 Pro Max */
