@@ -82,4 +82,9 @@ export class MatchService {
   rejectPasswordReset(requestId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/admin/reject-password-reset/${requestId}`, {});
   }
+
+  // Update video URL for completed match
+  updateMatchVideo(matchId: number, videoUrl: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/admin/update-match-video/${matchId}`, { match_video_url: videoUrl });
+  }
 }

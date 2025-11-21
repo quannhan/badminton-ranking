@@ -2,7 +2,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Báo Cáo Kết Quả Trận Đấu</h5>
+        <h5 class="modal-title">{{ 'dashboard.report_result_modal' | translate }}</h5>
         <button type="button" class="btn-close" (click)="closeModal()"></button>
       </div>
       <div class="modal-body">
@@ -11,19 +11,25 @@
         <form [formGroup]="reportForm" (ngSubmit)="onSubmit()">
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label class="form-label">Loại trận đấu</label>
+              <label class="form-label">{{ 'form.match_type' | translate }}</label>
               <select class="form-select" formControlName="match_type">
                 <option *ngFor="let type of matchTypes" [value]="type.value">
-                  {{ type.label }}
+                  {{ type.labelKey | translate }}
                 </option>
               </select>
             </div>
 
             <div class="col-md-6 mb-3">
-              <label class="form-label">Điểm cược</label>
+              <label class="form-label">{{ 'form.stake_value' | translate }}</label>
               <select class="form-select" formControlName="stake_value">
                 <option *ngFor="let stake of stakeValues" [value]="stake.value">
-                  {{ stake.label }} điểm
+                  <ng-container *ngIf="stake.labelKey">
+                    {{ stake.value }} ({{ stake.labelKey | translate }})
+                  </ng-container>
+                  <ng-container *ngIf="!stake.labelKey">
+                    {{ stake.label }}
+                  </ng-container>
+                  {{ 'stake.points' | translate }}
                 </option>
               </select>
             </div>
@@ -31,11 +37,11 @@
 
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label class="form-label">Team 1</label>
+              <label class="form-label">{{ 'match.team1' | translate }}</label>
               <div formArrayName="team1_player_ids">
                 <div *ngFor="let control of team1Players.controls; let i = index" class="mb-2">
                   <select class="form-select" [formControlName]="i">
-                    <option [value]="null">Chọn người chơi {{ i + 1 }}</option>
+                    <option [value]="null">{{ 'form.select_player' | translate }} {{ i + 1 }}</option>
                     <option *ngFor="let user of allUsers" [value]="user.user_id">
                       {{ user.display_name }} ({{ user.level }})
                     </option>
@@ -45,11 +51,11 @@
             </div>
 
             <div class="col-md-6 mb-3">
-              <label class="form-label">Team 2</label>
+              <label class="form-label">{{ 'match.team2' | translate }}</label>
               <div formArrayName="team2_player_ids">
                 <div *ngFor="let control of team2Players.controls; let i = index" class="mb-2">
                   <select class="form-select" [formControlName]="i">
-                    <option [value]="null">Chọn người chơi {{ i + 1 }}</option>
+                    <option [value]="null">{{ 'form.select_player' | translate }} {{ i + 1 }}</option>
                     <option *ngFor="let user of allUsers" [value]="user.user_id">
                       {{ user.display_name }} ({{ user.level }})
                     </option>
@@ -60,32 +66,32 @@
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Đội thắng</label>
+            <label class="form-label">{{ 'form.winning_team' | translate }}</label>
             <select class="form-select" formControlName="winning_team">
-              <option [value]="null">Chọn đội thắng</option>
-              <option [value]="1">Team 1</option>
-              <option [value]="2">Team 2</option>
+              <option [value]="null">{{ 'form.select_winner' | translate }}</option>
+              <option [value]="1">{{ 'match.team1' | translate }}</option>
+              <option [value]="2">{{ 'match.team2' | translate }}</option>
             </select>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Ghi chú (tùy chọn)</label>
-            <textarea class="form-control" formControlName="notes" rows="2" placeholder="Nhập ghi chú về trận đấu..."></textarea>
+            <label class="form-label">{{ 'form.notes_optional' | translate }}</label>
+            <textarea class="form-control" formControlName="notes" rows="2" [placeholder]="'admin.enter_notes' | translate"></textarea>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Link YouTube (tùy chọn)</label>
+            <label class="form-label">{{ 'form.youtube_link' | translate }}</label>
             <input type="url" class="form-control" formControlName="match_video_url" placeholder="https://youtube.com/watch?v=...">
-            <small class="text-muted">Đính kèm link video trận đấu trên YouTube</small>
+            <small class="text-muted">{{ 'form.youtube_hint' | translate }}</small>
           </div>
 
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="closeModal()">
-              Hủy
+              {{ 'btn.cancel' | translate }}
             </button>
             <button type="submit" class="btn btn-primary" [disabled]="loading || reportForm.invalid">
               <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
-              Báo Cáo
+              {{ 'btn.submit' | translate }}
             </button>
           </div>
         </form>

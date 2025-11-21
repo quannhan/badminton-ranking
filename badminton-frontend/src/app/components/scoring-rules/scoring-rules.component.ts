@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-scoring-rules',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './scoring-rules.component.html',
   styleUrls: ['./scoring-rules.component.scss']
 })
@@ -14,19 +15,19 @@ export class ScoringRulesComponent {
       stakeValue: 2,
       winnerPoints: 20,
       loserPoints: 10,
-      description: 'Trận đấu kèo nước (mức thấp nhất)'
+      descriptionKey: 'scoring.example_low'
     },
     {
       stakeValue: 5,
       winnerPoints: 50,
       loserPoints: 25,
-      description: 'Trận đấu với điểm cược 5 (mức trung bình)'
+      descriptionKey: 'scoring.example_medium'
     },
     {
       stakeValue: 10,
       winnerPoints: 100,
       loserPoints: 50,
-      description: 'Trận đấu với điểm cược 10 (mức cao)'
+      descriptionKey: 'scoring.example_high'
     }
   ];
 }

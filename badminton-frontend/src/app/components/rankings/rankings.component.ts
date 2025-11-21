@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RankingService } from '../../services/ranking.service';
 import { OverallRanking, Ranking } from '../../models/ranking.model';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-rankings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './rankings.component.html',
   styleUrls: ['./rankings.component.scss']
 })
@@ -20,11 +21,11 @@ export class RankingsComponent implements OnInit {
   error = '';
 
   matchTypes = [
-    { value: 'overall', label: 'Tổng hợp' },
-    { value: 'SINGLES', label: 'Đơn' },
-    { value: 'DOUBLES_MEN', label: 'Đôi nam' },
-    { value: 'DOUBLES_WOMEN', label: 'Đôi nữ' },
-    { value: 'DOUBLES_MIXED', label: 'Đôi nam nữ' }
+    { value: 'overall', labelKey: 'rankings.overall' },
+    { value: 'SINGLES', labelKey: 'match.singles' },
+    { value: 'DOUBLES_MEN', labelKey: 'match.doubles_men' },
+    { value: 'DOUBLES_WOMEN', labelKey: 'match.doubles_women' },
+    { value: 'DOUBLES_MIXED', labelKey: 'match.doubles_mixed' }
   ];
 
   levels = ['A', 'B', 'C'];

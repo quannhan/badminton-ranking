@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h2 class="mb-4">Quản trị Hệ Thống</h2>
+  <h2 class="mb-4">{{ 'admin.title' | translate }}</h2>
 
   <!-- Alert messages -->
   <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -15,30 +15,30 @@
   <!-- Super Admin Controls -->
   <div class="card mb-4 border-warning" *ngIf="isSuperAdmin()">
     <div class="card-header bg-warning text-dark">
-      <h5 class="mb-0">⚠️ Super Admin Controls</h5>
+      <h5 class="mb-0">{{ 'admin.super_admin_controls' | translate }}</h5>
     </div>
     <div class="card-body">
       <button class="btn btn-danger" (click)="openResetPointsModal()">
-        <i class="bi bi-arrow-counterclockwise"></i> Reset Tất Cả Điểm
+        <i class="bi bi-arrow-counterclockwise"></i> {{ 'admin.reset_points' | translate }}
       </button>
-      <small class="text-muted ms-3">Xóa toàn bộ điểm của tất cả thành viên</small>
+      <small class="text-muted ms-3">{{ 'admin.delete_all_points' | translate }}</small>
     </div>
   </div>
 
   <!-- Password Reset Requests (Super Admin Only) -->
   <div class="card mb-4" *ngIf="isSuperAdmin() && passwordResetRequests.length > 0">
     <div class="card-header bg-info text-white">
-      <h5 class="mb-0">Yêu Cầu Reset Mật Khẩu ({{ passwordResetRequests.length }})</h5>
+      <h5 class="mb-0">{{ 'admin.password_reset' | translate }} ({{ passwordResetRequests.length }})</h5>
     </div>
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-hover">
           <thead>
             <tr>
-              <th>Email</th>
-              <th>Tên</th>
-              <th>Ngày yêu cầu</th>
-              <th>Hành động</th>
+              <th>{{ 'common.email' | translate }}</th>
+              <th>{{ 'common.name' | translate }}</th>
+              <th>{{ 'admin.request_date' | translate }}</th>
+              <th>{{ 'match.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -48,10 +48,10 @@
               <td>{{ request.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
               <td>
                 <button class="btn btn-sm btn-success me-2" (click)="openPasswordResetModal(request)">
-                  <i class="bi bi-key"></i> Cấp mật khẩu mới
+                  <i class="bi bi-key"></i> {{ 'admin.grant_new_password' | translate }}
                 </button>
                 <button class="btn btn-sm btn-danger" (click)="rejectPasswordReset(request.request_id)">
-                  <i class="bi bi-x-circle"></i> Từ chối
+                  <i class="bi bi-x-circle"></i> {{ 'btn.reject' | translate }}
                 </button>
               </td>
             </tr>
@@ -64,17 +64,17 @@
   <!-- Pending Users -->
   <div class="card mb-4" *ngIf="pendingUsers.length > 0">
     <div class="card-header bg-danger text-white">
-      <h5 class="mb-0">Tài Khoản Chờ Duyệt ({{ pendingUsers.length }})</h5>
+      <h5 class="mb-0">{{ 'admin.pending_users' | translate }} ({{ pendingUsers.length }})</h5>
     </div>
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-hover">
           <thead>
             <tr>
-              <th>Email</th>
-              <th>Tên</th>
-              <th>Ngày đăng ký</th>
-              <th>Hành động</th>
+              <th>{{ 'common.email' | translate }}</th>
+              <th>{{ 'common.name' | translate }}</th>
+              <th>{{ 'admin.registration_date' | translate }}</th>
+              <th>{{ 'match.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -84,10 +84,10 @@
               <td>{{ user.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
               <td>
                 <button class="btn btn-sm btn-success me-2" (click)="approveUser(user.user_id)">
-                  <i class="bi bi-check-circle"></i> Duyệt
+                  <i class="bi bi-check-circle"></i> {{ 'btn.approve' | translate }}
                 </button>
                 <button class="btn btn-sm btn-danger" (click)="rejectUser(user.user_id)">
-                  <i class="bi bi-x-circle"></i> Từ chối
+                  <i class="bi bi-x-circle"></i> {{ 'btn.reject' | translate }}
                 </button>
               </td>
             </tr>
@@ -100,37 +100,41 @@
   <!-- Create Match Form -->
   <div class="card mb-4">
     <div class="card-header bg-primary text-white">
-      <h5 class="mb-0">Tạo Kèo Mới</h5>
+      <h5 class="mb-0">{{ 'admin.create_match' | translate }}</h5>
     </div>
     <div class="card-body">
       <form [formGroup]="createMatchForm" (ngSubmit)="onSubmit()">
         <div class="row">
           <div class="col-md-6 mb-3">
-            <label class="form-label">Loại trận đấu</label>
+            <label class="form-label">{{ 'form.match_type' | translate }}</label>
             <select class="form-select" formControlName="match_type">
               <option *ngFor="let type of matchTypes" [value]="type.value">
-                {{ type.label }}
+                {{ type.labelKey | translate }}
               </option>
             </select>
           </div>
 
           <div class="col-md-6 mb-3">
-            <label class="form-label">Điểm cược</label>
+            <label class="form-label">{{ 'form.stake_value' | translate }}</label>
             <select class="form-select" formControlName="stake_value">
               <option *ngFor="let stake of stakeValues" [value]="stake.value">
-                {{ stake.label }} điểm
+                <ng-container *ngIf="stake.labelKey; else plainLabel">
+                  {{ stake.value }} ({{ stake.labelKey | translate }})
+                </ng-container>
+                <ng-template #plainLabel>{{ stake.label }}</ng-template>
+                 {{ 'stake.points' | translate }}
               </option>
             </select>
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Team 1</label>
-            <div formArrayName="team1_player_ids">
-              <div *ngFor="let control of team1Players.controls; let i = index" class="mb-2">
-                <select class="form-select" [formControlName]="i">
-                  <option [value]="null">Chọn người chơi {{ i + 1 }}</option>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">{{ 'match.team1' | translate }}</label>
+              <div formArrayName="team1_player_ids">
+                <div *ngFor="let control of team1Players.controls; let i = index" class="mb-2">
+                  <select class="form-select" [formControlName]="i">
+                    <option [value]="null">{{ 'form.select_player' | translate }} {{ i + 1 }}</option>
                   <option *ngFor="let user of allUsers" [value]="user.user_id">
                     {{ user.display_name }} ({{ user.level }})
                   </option>
@@ -140,11 +144,11 @@
           </div>
 
           <div class="col-md-6 mb-3">
-            <label class="form-label">Team 2</label>
+            <label class="form-label">{{ 'match.team2' | translate }}</label>
             <div formArrayName="team2_player_ids">
               <div *ngFor="let control of team2Players.controls; let i = index" class="mb-2">
                 <select class="form-select" [formControlName]="i">
-                  <option [value]="null">Chọn người chơi {{ i + 1 }}</option>
+                  <option [value]="null">{{ 'form.select_player' | translate }} {{ i + 1 }}</option>
                   <option *ngFor="let user of allUsers" [value]="user.user_id">
                     {{ user.display_name }} ({{ user.level }})
                   </option>
@@ -155,31 +159,31 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Kết quả (tùy chọn - để trống nếu chưa đấu)</label>
+          <label class="form-label">{{ 'form.result_optional' | translate }}</label>
           <select class="form-select" formControlName="winning_team">
-            <option [value]="null">Chưa xác định (chờ đấu)</option>
-            <option [value]="1">Team 1 Thắng</option>
-            <option [value]="2">Team 2 Thắng</option>
+            <option [value]="null">{{ 'form.not_determined' | translate }}</option>
+            <option [value]="1">{{ 'match.team1' | translate }} {{ 'form.team_wins' | translate }}</option>
+            <option [value]="2">{{ 'match.team2' | translate }} {{ 'form.team_wins' | translate }}</option>
           </select>
           <small class="text-muted">
-            Nếu chọn kết quả, điểm sẽ được cộng ngay. Nếu để trống, kèo sẽ ở trạng thái PENDING.
+            {{ 'admin.result_hint' | translate }}
           </small>
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Ghi chú (tùy chọn)</label>
-          <textarea class="form-control" formControlName="notes" rows="2" placeholder="Nhập ghi chú về trận đấu..."></textarea>
+          <label class="form-label">{{ 'form.notes_optional' | translate }}</label>
+          <textarea class="form-control" formControlName="notes" rows="2" [placeholder]="'admin.enter_notes' | translate"></textarea>
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Link YouTube (tùy chọn)</label>
+          <label class="form-label">{{ 'form.youtube_link' | translate }}</label>
           <input type="url" class="form-control" formControlName="match_video_url" placeholder="https://youtube.com/watch?v=...">
-          <small class="text-muted">Đính kèm link video trận đấu trên YouTube</small>
+          <small class="text-muted">{{ 'form.youtube_hint' | translate }}</small>
         </div>
 
         <button type="submit" class="btn btn-primary" [disabled]="loading || createMatchForm.invalid">
           <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
-          Tạo Kèo
+          {{ 'btn.create' | translate }}
         </button>
       </form>
     </div>
@@ -188,11 +192,11 @@
   <!-- Pending Matches -->
   <div class="card">
     <div class="card-header bg-warning">
-      <h5 class="mb-0">Kèo Chờ Duyệt ({{ pendingMatches.length }})</h5>
+      <h5 class="mb-0">{{ 'admin.pending_matches' | translate }} ({{ pendingMatches.length }})</h5>
     </div>
     <div class="card-body">
       <div *ngIf="pendingMatches.length === 0" class="text-center text-muted py-4">
-        Không có kèo nào chờ duyệt
+        {{ 'admin.no_pending_matches_text' | translate }}
       </div>
 
       <div *ngFor="let match of pendingMatches" class="card mb-3">

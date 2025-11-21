@@ -2,11 +2,11 @@
   <div class="row mb-4">
     <div class="col-12 d-flex justify-content-between align-items-center">
       <div>
-        <h2 class="mb-3">Chào mừng, {{ currentUser?.display_name }}! 👋</h2>
-        <p class="text-muted">Level: <span class="badge" [ngClass]="getLevelBadgeClass(currentUser?.level || 'C')">{{ currentUser?.level }}</span></p>
+        <h2 class="mb-3">{{ 'dashboard.welcome' | translate }}, {{ currentUser?.display_name }}! 👋</h2>
+        <p class="text-muted">{{ 'dashboard.level' | translate }}: <span class="badge" [ngClass]="getLevelBadgeClass(currentUser?.level || 'C')">{{ currentUser?.level }}</span></p>
       </div>
       <button class="btn btn-primary" (click)="openReportMatchModal()">
-        <i class="bi bi-plus-circle"></i> Báo Cáo Kết Quả
+        <i class="bi bi-plus-circle"></i> {{ 'dashboard.report_result' | translate }}
       </button>
     </div>
   </div>
@@ -16,7 +16,7 @@
       <div class="card text-center">
         <div class="card-body">
           <h3 class="text-primary">{{ currentUser?.total_points || 0 }}</h3>
-          <p class="text-muted mb-0">Tổng điểm</p>
+          <p class="text-muted mb-0">{{ 'dashboard.total_points' | translate }}</p>
         </div>
       </div>
     </div>
@@ -24,7 +24,7 @@
       <div class="card text-center">
         <div class="card-body">
           <h3 class="text-success">{{ currentUser?.singles_points || 0 }}</h3>
-          <p class="text-muted mb-0">Điểm đơn</p>
+          <p class="text-muted mb-0">{{ 'dashboard.singles_points' | translate }}</p>
         </div>
       </div>
     </div>
@@ -32,7 +32,7 @@
       <div class="card text-center">
         <div class="card-body">
           <h3 class="text-info">{{ currentUser?.doubles_points || 0 }}</h3>
-          <p class="text-muted mb-0">Điểm đôi</p>
+          <p class="text-muted mb-0">{{ 'dashboard.doubles_points' | translate }}</p>
         </div>
       </div>
     </div>
@@ -40,7 +40,7 @@
       <div class="card text-center">
         <div class="card-body">
           <h3 class="text-warning">{{ allUsers.length }}</h3>
-          <p class="text-muted mb-0">Thành viên</p>
+          <p class="text-muted mb-0">{{ 'dashboard.members' | translate }}</p>
         </div>
       </div>
     </div>
@@ -49,19 +49,20 @@
   <!-- Completed Matches This Month -->
   <div class="row mb-4">
     <div class="col-12">
-      <h3 class="mb-3">Kết Quả Trận Đấu Gần Đây (Tháng {{ getCurrentMonth() }})</h3>
+      <h3 class="mb-3">{{ 'dashboard.recent_matches' | translate }} ({{ 'dashboard.month' | translate }} {{ getCurrentMonth() }})</h3>
       <div class="table-responsive">
         <table class="table table-hover">
           <thead>
             <tr>
-              <th>Loại</th>
-              <th>Team 1</th>
-              <th>Team 2</th>
-              <th>Điểm</th>
-              <th>Trạng thái</th>
-              <th>Thời gian</th>
-              <th>Ghi chú</th>
-              <th>Video</th>
+              <th>{{ 'match.type' | translate }}</th>
+              <th>{{ 'match.team1' | translate }}</th>
+              <th>{{ 'match.team2' | translate }}</th>
+              <th>{{ 'match.points' | translate }}</th>
+              <th>{{ 'match.status' | translate }}</th>
+              <th>{{ 'match.time' | translate }}</th>
+              <th>{{ 'match.notes' | translate }}</th>
+              <th>{{ 'match.video' | translate }}</th>
+              <th *ngIf="currentUser?.is_admin">{{ 'match.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -109,12 +110,18 @@
               </td>
               <td>
                 <a *ngIf="match.match_video_url" [href]="match.match_video_url" target="_blank" class="btn btn-sm btn-danger">
-                  <i class="bi bi-youtube"></i> Xem
+                  <i class="bi bi-youtube"></i> {{ 'common.watch' | translate }}
                 </a>
+                <span *ngIf="!match.match_video_url" class="text-muted">-</span>
+              </td>
+              <td *ngIf="currentUser?.is_admin">
+                <button class="btn btn-sm btn-outline-primary" (click)="openUpdateVideoModal(match)">
+                  <i class="bi bi-camera-video"></i> Cập nhật video
+                </button>
               </td>
             </tr>
             <tr *ngIf="completedMatches.length === 0">
-              <td colspan="8" class="text-center text-muted">Chưa có trận đấu nào trong tháng này</td>
+              <td [attr.colspan]="currentUser?.is_admin ? 9 : 8" class="text-center text-muted">{{ 'dashboard.no_matches' | translate }}</td>
             </tr>
           </tbody>
         </table>
@@ -125,20 +132,20 @@
   <!-- Pending Matches This Month (Created by Admin) -->
   <div class="row mb-4">
     <div class="col-12">
-      <h3 class="mb-3">Danh Sách Kèo Đấu Trong Tháng Này (Tháng {{ getCurrentMonth() }})</h3>
+      <h3 class="mb-3">{{ 'dashboard.pending_matches' | translate }} ({{ 'dashboard.month' | translate }} {{ getCurrentMonth() }})</h3>
       <div class="table-responsive">
         <table class="table table-hover">
           <thead>
             <tr>
-              <th>Loại</th>
-              <th>Team 1</th>
-              <th>Team 2</th>
-              <th>Điểm</th>
-              <th>Trạng thái</th>
-              <th>Người tạo</th>
-              <th>Thời gian</th>
-              <th>Ghi chú</th>
-              <th *ngIf="currentUser?.is_admin || isUserInAnyMatch()">Hành động</th>
+              <th>{{ 'match.type' | translate }}</th>
+              <th>{{ 'match.team1' | translate }}</th>
+              <th>{{ 'match.team2' | translate }}</th>
+              <th>{{ 'match.points' | translate }}</th>
+              <th>{{ 'match.status' | translate }}</th>
+              <th>{{ 'match.reporter' | translate }}</th>
+              <th>{{ 'match.time' | translate }}</th>
+              <th>{{ 'match.notes' | translate }}</th>
+              <th *ngIf="currentUser?.is_admin || isUserInAnyMatch()">{{ 'match.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -190,10 +197,10 @@
                   *ngIf="match.status === 'APPROVED' && isMatchPending(match)"
                   class="btn btn-sm btn-primary me-2"
                   (click)="openUpdateResultModal(match)">
-                  <i class="bi bi-pencil"></i> Cập nhật kết quả
+                  <i class="bi bi-pencil"></i> {{ 'btn.update_result' | translate }}
                 </button>
                 <span *ngIf="match.status === 'PENDING'" class="badge bg-warning">
-                  Đang chờ duyệt
+                  {{ 'dashboard.waiting_approval' | translate }}
                 </span>
               </td>
               <td *ngIf="!currentUser?.is_admin && isUserInMatch(match)">
@@ -201,15 +208,15 @@
                   *ngIf="match.status === 'APPROVED' && isMatchPending(match)"
                   class="btn btn-sm btn-warning"
                   (click)="openReportResultModal(match)">
-                  <i class="bi bi-flag"></i> Báo cáo kết quả
+                  <i class="bi bi-flag"></i> {{ 'btn.report_result' | translate }}
                 </button>
                 <span *ngIf="match.status === 'PENDING'" class="badge bg-info">
-                  Đã báo cáo, chờ duyệt
+                  {{ 'dashboard.reported_waiting' | translate }}
                 </span>
               </td>
             </tr>
             <tr *ngIf="pendingMatches.length === 0">
-              <td [attr.colspan]="(currentUser?.is_admin || isUserInAnyMatch()) ? 9 : 8" class="text-center text-muted">Chưa có kèo đấu nào trong tháng này</td>
+              <td [attr.colspan]="(currentUser?.is_admin || isUserInAnyMatch()) ? 9 : 8" class="text-center text-muted">{{ 'dashboard.no_pending_matches' | translate }}</td>
             </tr>
           </tbody>
         </table>
@@ -219,11 +226,11 @@
 
   <div class="row">
     <div class="col-12">
-      <h3 class="mb-3">Bảng Xếp Hạng</h3>
+      <h3 class="mb-3">{{ 'dashboard.rankings' | translate }}</h3>
       
       <div *ngIf="loading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Đang tải...</span>
+          <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
         </div>
       </div>
 
@@ -231,12 +238,12 @@
         <table class="table table-hover">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Tên</th>
-              <th>Level</th>
-              <th>Tổng điểm</th>
-              <th>Điểm đơn</th>
-              <th>Điểm đôi</th>
+              <th>{{ 'common.rank' | translate }}</th>
+              <th>{{ 'common.name' | translate }}</th>
+              <th>{{ 'dashboard.level' | translate }}</th>
+              <th>{{ 'dashboard.total_points' | translate }}</th>
+              <th>{{ 'dashboard.singles_points' | translate }}</th>
+              <th>{{ 'dashboard.doubles_points' | translate }}</th>
               <th></th>
             </tr>
           </thead>
@@ -265,7 +272,7 @@
               <td>{{ user.doubles_points }}</td>
               <td>
                 <button *ngIf="user.user_id !== currentUser?.user_id" class="btn btn-sm btn-outline-primary" (click)="viewUserProfile(user)">
-                  <i class="bi bi-eye"></i> Xem
+                  <i class="bi bi-eye"></i> {{ 'dashboard.view' | translate }}
                 </button>
               </td>
             </tr>
@@ -288,17 +295,17 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Cập nhật kết quả trận đấu</h5>
+        <h5 class="modal-title">{{ 'dashboard.update_result_modal' | translate }}</h5>
         <button type="button" class="btn-close" (click)="closeUpdateResultModal()"></button>
       </div>
       <div class="modal-body" *ngIf="selectedMatch">
         <div class="mb-3">
-          <p><strong>Loại:</strong> {{ getMatchTypeLabel(selectedMatch.match_type) }}</p>
-          <p><strong>Điểm:</strong> {{ selectedMatch.stake_value }}</p>
+          <p><strong>{{ 'match.type' | translate }}:</strong> {{ getMatchTypeLabel(selectedMatch.match_type) }}</p>
+          <p><strong>{{ 'match.points' | translate }}:</strong> {{ selectedMatch.stake_value }}</p>
         </div>
         
         <div class="mb-3">
-          <h6>Team 1:</h6>
+          <h6>{{ 'match.team1' | translate }}:</h6>
           <ul>
             <li *ngFor="let player of getTeamPlayers(selectedMatch, 1)">
               {{ player.display_name }}
@@ -307,7 +314,7 @@
         </div>
         
         <div class="mb-3">
-          <h6>Team 2:</h6>
+          <h6>{{ 'match.team2' | translate }}:</h6>
           <ul>
             <li *ngFor="let player of getTeamPlayers(selectedMatch, 2)">
               {{ player.display_name }}
@@ -316,24 +323,24 @@
         </div>
         
         <div class="mb-3">
-          <label class="form-label"><strong>Đội thắng:</strong></label>
+          <label class="form-label"><strong>{{ 'form.winning_team' | translate }}:</strong></label>
           <select class="form-select" [(ngModel)]="updateWinningTeam" required>
-            <option [value]="null">-- Chọn đội thắng --</option>
-            <option [value]="1">Team 1</option>
-            <option [value]="2">Team 2</option>
+            <option [value]="null">-- {{ 'form.select_winner' | translate }} --</option>
+            <option [value]="1">{{ 'match.team1' | translate }}</option>
+            <option [value]="2">{{ 'match.team2' | translate }}</option>
           </select>
         </div>
         
         <div class="mb-3">
-          <label class="form-label">Link YouTube (tùy chọn)</label>
+          <label class="form-label">{{ 'form.youtube_link' | translate }}</label>
           <input type="url" class="form-control" [(ngModel)]="updateVideoUrl" placeholder="https://youtube.com/watch?v=...">
-          <small class="text-muted">Đính kèm link video trận đấu trên YouTube</small>
+          <small class="text-muted">{{ 'form.youtube_hint' | translate }}</small>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeUpdateResultModal()">Hủy</button>
+        <button type="button" class="btn btn-secondary" (click)="closeUpdateResultModal()">{{ 'btn.cancel' | translate }}</button>
         <button type="button" class="btn btn-primary" (click)="submitUpdateResult()" [disabled]="!updateWinningTeam">
-          Cập nhật
+          {{ 'btn.update' | translate }}
         </button>
       </div>
     </div>
@@ -346,12 +353,12 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Báo cáo kết quả trận đấu</h5>
+        <h5 class="modal-title">{{ 'dashboard.report_result_modal' | translate }}</h5>
         <button type="button" class="btn-close" (click)="closeReportResultModal()"></button>
       </div>
       <div class="modal-body" *ngIf="selectedMatch">
         <div class="alert alert-info">
-          <i class="bi bi-info-circle"></i> Kết quả sẽ được gửi đến admin để kiểm tra và duyệt.
+          <i class="bi bi-info-circle"></i> {{ 'dashboard.info_sent_admin' | translate }}
         </div>
         
         <div class="mb-3">
@@ -408,7 +415,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Thông tin người chơi</h5>
+        <h5 class="modal-title">{{ 'dashboard.user_profile' | translate }}</h5>
         <button type="button" class="btn-close" (click)="closeProfileModal()"></button>
       </div>
       <div class="modal-body" *ngIf="selectedUser">
@@ -423,11 +430,11 @@
             <h4>{{ selectedUser.display_name }}</h4>
             <p class="text-muted">{{ selectedUser.email }}</p>
             <span class="badge" [ngClass]="getLevelBadgeClass(selectedUser.level)">
-              Level {{ selectedUser.level }}
+              {{ 'dashboard.level' | translate }} {{ selectedUser.level }}
             </span>
           </div>
           <div class="col-md-8">
-            <h5>Thống kê</h5>
+            <h5>{{ 'dashboard.statistics' | translate }}</h5>
             <div class="row">
               <div class="col-4 mb-3">
                 <div class="card text-center">
@@ -522,4 +529,45 @@
   </div>
 </div>
 <div class="modal-backdrop" [class.show]="showProfileModal" *ngIf="showProfileModal"></div>
+
+<!-- Update Video Modal -->
+<div class="modal" [class.show]="showUpdateVideoModal" [style.display]="showUpdateVideoModal ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cập nhật link YouTube</h5>
+        <button type="button" class="btn-close" (click)="closeUpdateVideoModal()"></button>
+      </div>
+      <div class="modal-body" *ngIf="selectedMatch">
+        <div class="mb-3">
+          <p><strong>Loại:</strong> {{ getMatchTypeLabel(selectedMatch.match_type) }}</p>
+          <p><strong>Điểm:</strong> {{ selectedMatch.stake_value }}</p>
+          <p><strong>Thời gian:</strong> {{ selectedMatch.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Link YouTube</label>
+          <input 
+            type="url" 
+            class="form-control" 
+            [(ngModel)]="editVideoUrl" 
+            placeholder="https://youtube.com/watch?v=...">
+          <small class="text-muted">Nhập link YouTube của trận đấu (có thể để trống để xóa)</small>
+        </div>
+        
+        <div *ngIf="selectedMatch.match_video_url && editVideoUrl !== selectedMatch.match_video_url" class="alert alert-info">
+          <strong>Link hiện tại:</strong><br>
+          <a [href]="selectedMatch.match_video_url" target="_blank">{{ selectedMatch.match_video_url }}</a>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeUpdateVideoModal()">Hủy</button>
+        <button type="button" class="btn btn-primary" (click)="submitUpdateVideo()">
+          <i class="bi bi-save"></i> Lưu
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" [class.show]="showUpdateVideoModal" *ngIf="showUpdateVideoModal"></div>
 

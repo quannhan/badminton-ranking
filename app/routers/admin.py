@@ -667,4 +667,36 @@ def reject_password_reset(
     
     db.commit()
     
-    return {"message": "Password reset request rejected"}
+    return {"message": "Password reset request rejected"} 
+ 
+@router.post("/update-match-video/{match_id}")
+def update_match_video(
+    match_id: int,
+    video_data: dict,
+    current_admin: models.User = Depends(auth.get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """Cập nhật link YouTube cho trận đấu đã có kết quả"""
+    
+    # Lấy trận đấu
+    match = db.query(models.Match).filter(models.Match.match_id == match_id).first()
+    
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+    
+    # Kiểm tra trận đấu đã có kết quả chưa
+    if match.status != 'APPROVED':
+        raise HTTPException(status_code=400, detail="Can only update video for completed matches")
+    
+    # Cập nhật link video
+    match.match_video_url = video_data.get('match_video_url', None) or None
+    match.updated_at = datetime.utcnow()
+    
+    db.commit()
+    db.refresh(match)
+    
+    return {
+        "message": "Match video updated successfully",
+        "match_id": match_id,
+        "match_video_url": match.match_video_url
+    }

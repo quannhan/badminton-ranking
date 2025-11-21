@@ -5,11 +5,12 @@ import { MatchService } from '../../services/match.service';
 import { AuthService } from '../../services/auth.service';
 import { ReportMatchRequest } from '../../models/match.model';
 import { User } from '../../models/user.model';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-report-match-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
   templateUrl: './report-match-modal.component.html',
   styleUrls: ['./report-match-modal.component.scss']
 })
@@ -24,14 +25,14 @@ export class ReportMatchModalComponent implements OnInit {
   error = '';
 
   matchTypes = [
-    { value: 'SINGLES', label: 'Đơn' },
-    { value: 'DOUBLES_MEN', label: 'Đôi Nam' },
-    { value: 'DOUBLES_WOMEN', label: 'Đôi Nữ' },
-    { value: 'DOUBLES_MIXED', label: 'Đôi Nam Nữ' }
+    { value: 'SINGLES', labelKey: 'match.singles' },
+    { value: 'DOUBLES_MEN', labelKey: 'match.doubles_men' },
+    { value: 'DOUBLES_WOMEN', labelKey: 'match.doubles_women' },
+    { value: 'DOUBLES_MIXED', labelKey: 'match.doubles_mixed' }
   ];
 
   stakeValues = [
-    { value: 2, label: '2 (Kèo nước)' },
+    { value: 2, labelKey: 'stake.water_bet' },
     { value: 5, label: '5' },
     { value: 10, label: '10' }
   ];

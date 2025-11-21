@@ -10,19 +10,35 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+          <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">{{ 'nav.dashboard' | translate }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/scoring-rules" routerLinkActive="active">Hệ thống tính điểm</a>
+          <a class="nav-link" routerLink="/scoring-rules" routerLinkActive="active">{{ 'nav.scoring_rules' | translate }}</a>
         </li>
-        <!-- <li class="nav-item">
-          <a class="nav-link" routerLink="/rankings" routerLinkActive="active">Bảng xếp hạng</a>
-        </li> -->
         <li class="nav-item" *ngIf="currentUser.is_admin">
-          <a class="nav-link" routerLink="/admin" routerLinkActive="active">Quản trị</a>
+          <a class="nav-link" routerLink="/admin" routerLinkActive="active">{{ 'nav.admin' | translate }}</a>
         </li>
       </ul>
       <ul class="navbar-nav">
+        <!-- Language Switcher -->
+        <li class="nav-item dropdown me-3">
+          <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <span *ngIf="currentLanguage === 'vi'" class="fi fi-vn" style="font-size: 1.5rem;"></span>
+            <span *ngIf="currentLanguage === 'en'" class="fi fi-gb" style="font-size: 1.5rem;"></span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a class="dropdown-item" (click)="setLanguage('vi')" style="cursor: pointer;">
+                <span class="fi fi-vn me-2"></span> Tiếng Việt
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" (click)="setLanguage('en')" style="cursor: pointer;">
+                <span class="fi fi-gb me-2"></span> English
+              </a>
+            </li>
+          </ul>
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <img 
@@ -34,9 +50,9 @@
             {{ currentUser?.display_name }}
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" routerLink="/profile">Hồ sơ</a></li>
+            <li><a class="dropdown-item" routerLink="/profile">{{ 'nav.profile' | translate }}</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" (click)="logout()" style="cursor: pointer;">Đăng xuất</a></li>
+            <li><a class="dropdown-item" (click)="logout()" style="cursor: pointer;">{{ 'nav.logout' | translate }}</a></li>
           </ul>
         </li>
       </ul>

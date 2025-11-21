@@ -5,11 +5,14 @@ import { MatchService } from '../../services/match.service';
 import { AuthService } from '../../services/auth.service';
 import { Match, CreateMatchRequest } from '../../models/match.model';
 import { User } from '../../models/user.model';
+import { TranslatePipe } from '../../pipes/translate.pipe';
+import { translate } from '../../translations/translations';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
@@ -30,14 +33,14 @@ export class AdminComponent implements OnInit {
   newTempPassword = '';
 
   matchTypes = [
-    { value: 'SINGLES', label: 'Đơn' },
-    { value: 'DOUBLES_MEN', label: 'Đôi Nam' },
-    { value: 'DOUBLES_WOMEN', label: 'Đôi Nữ' },
-    { value: 'DOUBLES_MIXED', label: 'Đôi Nam Nữ' }
+    { value: 'SINGLES', labelKey: 'match.singles' },
+    { value: 'DOUBLES_MEN', labelKey: 'match.doubles_men' },
+    { value: 'DOUBLES_WOMEN', labelKey: 'match.doubles_women' },
+    { value: 'DOUBLES_MIXED', labelKey: 'match.doubles_mixed' }
   ];
 
   stakeValues = [
-    { value: 2, label: '2 (Kèo nước)' },
+    { value: 2, labelKey: 'stake.water_bet' },
     { value: 5, label: '5' },
     { value: 10, label: '10' }
   ];
@@ -45,7 +48,8 @@ export class AdminComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private matchService: MatchService,
-    private authService: AuthService
+    private authService: AuthService,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
@@ -274,7 +278,11 @@ export class AdminComponent implements OnInit {
 
   getMatchTypeLabel(type: string): string {
     const mt = this.matchTypes.find(t => t.value === type);
-    return mt ? mt.label : type;
+    if (mt) {
+      const lang = this.languageService.getCurrentLanguage();
+      return translate(mt.labelKey, lang);
+    }
+    return type;
   }
 
   approveUser(userId: number): void {

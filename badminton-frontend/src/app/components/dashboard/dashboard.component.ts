@@ -6,11 +6,12 @@ import { MatchService } from '../../services/match.service';
 import { User } from '../../models/user.model';
 import { Match } from '../../models/match.model';
 import { ReportMatchModalComponent } from '../report-match-modal/report-match-modal.component';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReportMatchModalComponent],
+  imports: [CommonModule, FormsModule, ReportMatchModalComponent, TranslatePipe],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -24,12 +25,14 @@ export class DashboardComponent implements OnInit {
   showUpdateResultModal = false;
   showReportResultModal = false;
   showProfileModal = false;
+  showUpdateVideoModal = false;
   selectedMatch: Match | null = null;
   selectedUser: User | null = null;
   updateWinningTeam: number | null = null;
   updateVideoUrl: string = '';
   reportWinningTeam: number | null = null;
   reportVideoUrl: string = '';
+  editVideoUrl: string = '';
   matchHistory: any[] = [];
   matchHistoryStats = {
     singles: { wins: 0, losses: 0 },
@@ -328,6 +331,36 @@ export class DashboardComponent implements OnInit {
       error: (error) => {
         console.error('Error loading match history:', error);
         this.loadingMatchHistory = false;
+      }
+    });
+  }
+
+  openUpdateVideoModal(match: Match): void {
+    this.selectedMatch = match;
+    this.editVideoUrl = match.match_video_url || '';
+    this.showUpdateVideoModal = true;
+  }
+
+  closeUpdateVideoModal(): void {
+    this.showUpdateVideoModal = false;
+    this.selectedMatch = null;
+    this.editVideoUrl = '';
+  }
+
+  submitUpdateVideo(): void {
+    if (!this.selectedMatch) {
+      return;
+    }
+
+    this.matchService.updateMatchVideo(this.selectedMatch.match_id, this.editVideoUrl).subscribe({
+      next: () => {
+        alert('Đã cập nhật link video thành công!');
+        this.closeUpdateVideoModal();
+        this.loadCompletedMatches();
+      },
+      error: (error) => {
+        console.error('Error updating video:', error);
+        alert('Lỗi khi cập nhật video: ' + (error.error?.detail || 'Unknown error'));
       }
     });
   }

@@ -1,8 +1,8 @@
 <div class="login-container">
   <div class="login-card">
     <div class="text-center mb-4">
-      <h2>🏸 Metfone Badminton Ranking</h2>
-      <p class="text-muted">Đăng nhập vào hệ thống</p>
+      <h2>{{ 'login.system_title' | translate }}</h2>
+      <p class="text-muted">{{ 'login.subtitle' | translate }}</p>
     </div>
 
     <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -12,44 +12,44 @@
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="mb-3">
-        <label for="username" class="form-label">Email</label>
+        <label for="username" class="form-label">{{ 'login.email' | translate }}</label>
         <input 
           type="email" 
           class="form-control" 
           id="username" 
           formControlName="username"
           [class.is-invalid]="submitted && f['username'].errors"
-          placeholder="Nhập email">
+          [placeholder]="'login.enter_email_placeholder' | translate">
         <div *ngIf="submitted && f['username'].errors" class="invalid-feedback">
-          <div *ngIf="f['username'].errors['required']">Vui lòng nhập email</div>
+          <div *ngIf="f['username'].errors['required']">{{ 'login.required_email' | translate }}</div>
         </div>
       </div>
 
       <div class="mb-3">
-        <label for="password" class="form-label">Mật khẩu</label>
+        <label for="password" class="form-label">{{ 'login.password' | translate }}</label>
         <input 
           type="password" 
           class="form-control" 
           id="password" 
           formControlName="password"
           [class.is-invalid]="submitted && f['password'].errors"
-          placeholder="Nhập mật khẩu">
+          [placeholder]="'login.enter_password_placeholder' | translate">
         <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
-          <div *ngIf="f['password'].errors['required']">Vui lòng nhập mật khẩu</div>
+          <div *ngIf="f['password'].errors['required']">{{ 'login.required_password' | translate }}</div>
         </div>
       </div>
 
       <button type="submit" class="btn btn-primary w-100 mb-3" [disabled]="loading">
         <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
-        Đăng nhập
+        {{ 'login.btn' | translate }}
       </button>
 
       <div class="text-center mb-3">
-        <a href="javascript:void(0)" (click)="showForgotPassword = true" class="text-decoration-none">Quên mật khẩu?</a>
+        <a href="javascript:void(0)" (click)="showForgotPassword = true" class="text-decoration-none">{{ 'login.forgot_password' | translate }}</a>
       </div>
 
       <div class="text-center">
-        <p class="mb-0">Chưa có tài khoản? <a routerLink="/register" class="text-decoration-none">Đăng ký ngay</a></p>
+        <p class="mb-0">{{ 'login.no_account' | translate }} <a routerLink="/register" class="text-decoration-none">{{ 'login.register' | translate }}</a></p>
       </div>
     </form>
   </div>
@@ -60,7 +60,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Quên Mật Khẩu</h5>
+        <h5 class="modal-title">{{ 'login.forgot_title' | translate }}</h5>
         <button type="button" class="btn-close" (click)="closeForgotPassword()"></button>
       </div>
       <div class="modal-body">
@@ -70,21 +70,21 @@
         <div *ngIf="forgotPasswordError" class="alert alert-danger">
           {{ forgotPasswordError }}
         </div>
-        <p>Nhập email của bạn để gửi yêu cầu reset mật khẩu đến quản trị viên.</p>
+        <p>{{ 'login.forgot_message' | translate }}</p>
         <div class="mb-3">
-          <label class="form-label">Email</label>
+          <label class="form-label">{{ 'login.email' | translate }}</label>
           <input 
             type="email" 
             class="form-control" 
             [(ngModel)]="forgotPasswordEmail"
-            placeholder="Nhập email của bạn">
+            [placeholder]="'login.enter_email' | translate">
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeForgotPassword()">Đóng</button>
+        <button type="button" class="btn btn-secondary" (click)="closeForgotPassword()">{{ 'btn.close' | translate }}</button>
         <button type="button" class="btn btn-primary" (click)="submitForgotPassword()" [disabled]="!forgotPasswordEmail || forgotPasswordLoading">
           <span *ngIf="forgotPasswordLoading" class="spinner-border spinner-border-sm me-2"></span>
-          Gửi yêu cầu
+          {{ 'login.send_request' | translate }}
         </button>
       </div>
     </div>

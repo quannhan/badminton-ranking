@@ -2,20 +2,24 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, RouterLink } from '@angular/router';
 import { AuthService } from './services/auth.service';
+import { LanguageService, Language } from './services/language.service';
 import { User } from './models/user.model';
+import { TranslatePipe } from './pipes/translate.pipe';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, RouterLink],
+  imports: [CommonModule, RouterOutlet, RouterLink, TranslatePipe],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App implements OnInit {
   title = 'Metfone Badminton Ranking';
   currentUser: User | null = null;
+  currentLanguage: Language = 'vi';
 
   constructor(
     public authService: AuthService,
+    public languageService: LanguageService,
     private router: Router
   ) {}
 
@@ -23,6 +27,14 @@ export class App implements OnInit {
     this.authService.currentUser.subscribe((user: User | null) => {
       this.currentUser = user;
     });
+    
+    this.languageService.currentLanguage$.subscribe(lang => {
+      this.currentLanguage = lang;
+    });
+  }
+
+  setLanguage(lang: Language): void {
+    this.languageService.setLanguage(lang);
   }
 
   logout(): void {

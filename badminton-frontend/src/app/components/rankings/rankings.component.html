@@ -1,22 +1,22 @@
 <div class="rankings-container">
   <div class="container">
-    <h2 class="mb-4">🏆 Bảng xếp hạng</h2>
+    <h2 class="mb-4">{{ 'rankings.title' | translate }}</h2>
 
     <div class="card mb-4">
       <div class="card-body">
         <div class="row">
           <div class="col-md-6 mb-3">
-            <label class="form-label">Loại xếp hạng</label>
+            <label class="form-label">{{ 'rankings.type' | translate }}</label>
             <select class="form-select" [(ngModel)]="selectedType" (change)="onFilterChange()">
               <option *ngFor="let type of matchTypes" [value]="type.value">
-                {{ type.label }}
+                {{ type.labelKey | translate }}
               </option>
             </select>
           </div>
           <div class="col-md-6 mb-3">
-            <label class="form-label">Trình độ</label>
+            <label class="form-label">{{ 'rankings.level_filter' | translate }}</label>
             <select class="form-select" [(ngModel)]="selectedLevel" (change)="onFilterChange()">
-              <option value="ALL">Tổng hợp</option>
+              <option value="ALL">{{ 'rankings.overall' | translate }}</option>
               <option *ngFor="let level of levels" [value]="level">
                 Level {{ level }}
               </option>
@@ -28,7 +28,7 @@
 
     <div *ngIf="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Đang tải...</span>
+        <span class="visually-hidden">{{ 'rankings.loading' | translate }}</span>
       </div>
     </div>
 
@@ -41,14 +41,14 @@
           <table class="table table-hover">
             <thead>
               <tr>
-                <th>Hạng</th>
-                <th>Tên</th>
-                <th>Tổng điểm</th>
-                <th>Đơn</th>
-                <th>Đôi nam</th>
-                <th>Đôi nữ</th>
-                <th>Đôi nam nữ</th>
-                <th>Trận đấu</th>
+                <th>{{ 'rankings.rank' | translate }}</th>
+                <th>{{ 'rankings.name' | translate }}</th>
+                <th>{{ 'rankings.total_points' | translate }}</th>
+                <th>{{ 'rankings.singles' | translate }}</th>
+                <th>{{ 'rankings.doubles_men' | translate }}</th>
+                <th>{{ 'rankings.doubles_women' | translate }}</th>
+                <th>{{ 'rankings.doubles_mixed' | translate }}</th>
+                <th>{{ 'rankings.matches' | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -80,13 +80,13 @@
           <table class="table table-hover">
             <thead>
               <tr>
-                <th>Hạng</th>
-                <th>Tên</th>
-                <th>Điểm</th>
-                <th>Trận đấu</th>
-                <th>Thắng</th>
-                <th>Thua</th>
-                <th>Tỷ lệ thắng</th>
+                <th>{{ 'rankings.rank' | translate }}</th>
+                <th>{{ 'rankings.name' | translate }}</th>
+                <th>{{ 'rankings.points' | translate }}</th>
+                <th>{{ 'rankings.matches' | translate }}</th>
+                <th>{{ 'rankings.wins' | translate }}</th>
+                <th>{{ 'rankings.losses' | translate }}</th>
+                <th>{{ 'rankings.win_rate' | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -112,7 +112,7 @@
 
     <div *ngIf="!loading && ((selectedType === 'overall' && overallRankings.length === 0) || (selectedType !== 'overall' && typeRankings.length === 0))" 
          class="alert alert-info">
-      Chưa có dữ liệu xếp hạng cho bộ lọc này.
+      {{ 'rankings.no_data' | translate }}
     </div>
   </div>
 </div>
