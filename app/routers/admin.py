@@ -679,7 +679,7 @@ def update_match_video(
     """Cập nhật link YouTube cho trận đấu đã có kết quả"""
     
     # Lấy trận đấu
-    match = db.query(models.Match).filter(models.Match.match_id == match_id).first()
+    match = db.query(models.MatchReport).filter(models.MatchReport.match_id == match_id).first()
     
     if not match:
         raise HTTPException(status_code=404, detail="Match not found")
