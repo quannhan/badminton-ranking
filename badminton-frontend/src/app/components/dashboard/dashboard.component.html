@@ -109,20 +109,20 @@
                 </span>
               </td>
               <td>
-                <div *ngIf="match.match_video_url" class="d-flex flex-column gap-1">
+                <div *ngIf="match.match_video_url" class="video-links-container">
                   <a *ngFor="let url of match.match_video_url.split('\n'); let i = index" 
                      [href]="url.trim()" 
                      target="_blank" 
-                     class="btn btn-sm btn-danger"
-                     style="font-size: 0.75rem;">
-                    <i class="bi bi-youtube"></i> Video {{ i + 1 }}
+                     class="btn btn-sm btn-danger mb-1"
+                     [title]="'Watch video ' + (i + 1)">
+                    <i class="bi bi-youtube"></i> <span class="d-none d-lg-inline">Video</span> {{ i + 1 }}
                   </a>
                 </div>
                 <span *ngIf="!match.match_video_url" class="text-muted">-</span>
               </td>
-              <td *ngIf="currentUser?.is_admin">
-                <button class="btn btn-sm btn-outline-primary" (click)="openUpdateVideoModal(match)">
-                  <i class="bi bi-camera-video"></i> Cập nhật video
+              <td *ngIf="currentUser?.is_admin" class="action-column">
+                <button class="btn btn-sm btn-outline-primary" (click)="openUpdateVideoModal(match)" [title]="'Update video links'">
+                  <i class="bi bi-camera-video"></i> <span class="d-none d-xl-inline">Cập nhật</span>
                 </button>
               </td>
             </tr>

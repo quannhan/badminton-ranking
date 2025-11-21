@@ -25,8 +25,116 @@
 }
 
 /* Video links styling */
-.gap-1 {
+.video-links-container {
+  display: flex;
+  flex-direction: column;
   gap: 0.25rem;
+  align-items: flex-start;
+  
+  .btn-sm {
+    min-width: 75px;
+    text-align: center;
+  }
+}
+
+.action-column {
+  white-space: nowrap;
+  
+  .btn-sm {
+    white-space: nowrap;
+  }
+}
+
+/* Video buttons compact styling */
+.table {
+  td {
+    vertical-align: middle;
+  }
+}
+
+/* MacBook Pro 13" (2560x1600) and similar laptop screens */
+@media (min-width: 1280px) and (max-width: 1600px) {
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+  
+  .table {
+    th, td {
+      padding: 0.6rem 0.4rem;
+      font-size: 0.85rem;
+    }
+    
+    th {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  }
+  
+  /* Compact video buttons */
+  .btn-sm {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.5rem;
+    white-space: nowrap;
+    
+    .bi {
+      font-size: 0.9rem;
+    }
+  }
+  
+  /* Badges more compact */
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  /* Player names in team columns */
+  .d-flex.align-items-center {
+    font-size: 0.85rem;
+  }
+  
+  /* Stats cards optimized */
+  .card-body {
+    padding: 1.25rem;
+    
+    h3 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    p {
+      font-size: 0.875rem;
+      margin-bottom: 0;
+    }
+  }
+  
+  /* Headers */
+  h2 {
+    font-size: 1.75rem;
+  }
+  
+  h3 {
+    font-size: 1.4rem;
+  }
+}
+
+/* Tablet landscape and smaller laptops */
+@media (min-width: 769px) and (max-width: 1279px) {
+  .table {
+    th, td {
+      padding: 0.5rem 0.3rem;
+      font-size: 0.8rem;
+    }
+  }
+  
+  .btn-sm {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.4rem;
+  }
+  
+  .badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
 }
 
 /* Mobile Responsive for iPhone */
