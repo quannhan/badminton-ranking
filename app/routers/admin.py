@@ -667,8 +667,8 @@ def reject_password_reset(
     
     db.commit()
     
-    return {"message": "Password reset request rejected"} 
- 
+    return {"message": "Password reset request rejected"}
+
 @router.post("/update-match-video/{match_id}")
 def update_match_video(
     match_id: int,
