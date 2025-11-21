@@ -32,7 +32,7 @@ export class DashboardComponent implements OnInit {
   updateVideoUrl: string = '';
   reportWinningTeam: number | null = null;
   reportVideoUrl: string = '';
-  editVideoUrl: string = '';
+  editVideoUrls: string[] = ['', '', ''];
   matchHistory: any[] = [];
   matchHistoryStats = {
     singles: { wins: 0, losses: 0 },
@@ -337,14 +337,20 @@ export class DashboardComponent implements OnInit {
 
   openUpdateVideoModal(match: Match): void {
     this.selectedMatch = match;
-    this.editVideoUrl = match.match_video_url || '';
+    // Split existing URLs by newline
+    const urls = match.match_video_url ? match.match_video_url.split('\n').filter(url => url.trim()) : [];
+    this.editVideoUrls = [
+      urls[0] || '',
+      urls[1] || '',
+      urls[2] || ''
+    ];
     this.showUpdateVideoModal = true;
   }
 
   closeUpdateVideoModal(): void {
     this.showUpdateVideoModal = false;
     this.selectedMatch = null;
-    this.editVideoUrl = '';
+    this.editVideoUrls = ['', '', ''];
   }
 
   submitUpdateVideo(): void {
@@ -352,7 +358,13 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    this.matchService.updateMatchVideo(this.selectedMatch.match_id, this.editVideoUrl).subscribe({
+    // Join non-empty URLs with newline
+    const videoUrl = this.editVideoUrls
+      .map(url => url.trim())
+      .filter(url => url)
+      .join('\n');
+
+    this.matchService.updateMatchVideo(this.selectedMatch.match_id, videoUrl).subscribe({
       next: () => {
         alert('Đã cập nhật link video thành công!');
         this.closeUpdateVideoModal();

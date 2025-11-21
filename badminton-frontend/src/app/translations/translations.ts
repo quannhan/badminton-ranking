@@ -64,6 +64,11 @@ export const TRANSLATIONS: Record<'vi' | 'en', Record<string, string>> = {
     'admin.create_match': 'Tạo Kèo Mới',
     'admin.reset_points': 'Reset Tất Cả Điểm',
     'admin.password_reset': 'Yêu Cầu Reset Mật Khẩu',
+    'admin.update_video': 'Cập nhật link YouTube',
+    'admin.video_links_max': 'Link YouTube (Tối đa 3 link)',
+    'admin.optional': 'tùy chọn',
+    'admin.video_hint': 'Mỗi link xuống dòng. Để trống để bỏ link đó.',
+    'admin.current_links': 'Link hiện tại',
     
     // Forms
     'form.match_type': 'Loại trận đấu',
@@ -304,6 +309,11 @@ export const TRANSLATIONS: Record<'vi' | 'en', Record<string, string>> = {
     'admin.create_match': 'Create New Match',
     'admin.reset_points': 'Reset All Points',
     'admin.password_reset': 'Password Reset Requests',
+    'admin.update_video': 'Update YouTube Link',
+    'admin.video_links_max': 'YouTube Links (Maximum 3 links)',
+    'admin.optional': 'optional',
+    'admin.video_hint': 'Each link on a new line. Leave blank to remove that link.',
+    'admin.current_links': 'Current Links',
     
     // Forms
     'form.match_type': 'Match Type',

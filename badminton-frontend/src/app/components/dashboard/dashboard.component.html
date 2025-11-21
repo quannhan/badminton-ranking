@@ -109,9 +109,15 @@
                 </span>
               </td>
               <td>
-                <a *ngIf="match.match_video_url" [href]="match.match_video_url" target="_blank" class="btn btn-sm btn-danger">
-                  <i class="bi bi-youtube"></i> {{ 'common.watch' | translate }}
-                </a>
+                <div *ngIf="match.match_video_url" class="d-flex flex-column gap-1">
+                  <a *ngFor="let url of match.match_video_url.split('\n'); let i = index" 
+                     [href]="url.trim()" 
+                     target="_blank" 
+                     class="btn btn-sm btn-danger"
+                     style="font-size: 0.75rem;">
+                    <i class="bi bi-youtube"></i> Video {{ i + 1 }}
+                  </a>
+                </div>
                 <span *ngIf="!match.match_video_url" class="text-muted">-</span>
               </td>
               <td *ngIf="currentUser?.is_admin">
@@ -535,35 +541,53 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Cập nhật link YouTube</h5>
+        <h5 class="modal-title">{{ 'admin.update_video' | translate }}</h5>
         <button type="button" class="btn-close" (click)="closeUpdateVideoModal()"></button>
       </div>
       <div class="modal-body" *ngIf="selectedMatch">
         <div class="mb-3">
-          <p><strong>Loại:</strong> {{ getMatchTypeLabel(selectedMatch.match_type) }}</p>
-          <p><strong>Điểm:</strong> {{ selectedMatch.stake_value }}</p>
-          <p><strong>Thời gian:</strong> {{ selectedMatch.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
+          <p><strong>{{ 'match.type' | translate }}:</strong> {{ getMatchTypeLabel(selectedMatch.match_type) }}</p>
+          <p><strong>{{ 'match.points' | translate }}:</strong> {{ selectedMatch.stake_value }}</p>
+          <p><strong>{{ 'match.time' | translate }}:</strong> {{ selectedMatch.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
         </div>
         
         <div class="mb-3">
-          <label class="form-label">Link YouTube</label>
-          <input 
-            type="url" 
-            class="form-control" 
-            [(ngModel)]="editVideoUrl" 
-            placeholder="https://youtube.com/watch?v=...">
-          <small class="text-muted">Nhập link YouTube của trận đấu (có thể để trống để xóa)</small>
+          <label class="form-label">{{ 'admin.video_links_max' | translate }}</label>
+          <div class="mb-2">
+            <input 
+              type="url" 
+              class="form-control" 
+              [(ngModel)]="editVideoUrls[0]" 
+              placeholder="Link 1: https://youtube.com/watch?v=...">
+          </div>
+          <div class="mb-2">
+            <input 
+              type="url" 
+              class="form-control" 
+              [(ngModel)]="editVideoUrls[1]" 
+              placeholder="Link 2: https://youtube.com/watch?v=... ({{ 'admin.optional' | translate }})">
+          </div>
+          <div class="mb-2">
+            <input 
+              type="url" 
+              class="form-control" 
+              [(ngModel)]="editVideoUrls[2]" 
+              placeholder="Link 3: https://youtube.com/watch?v=... ({{ 'admin.optional' | translate }})">
+          </div>
+          <small class="text-muted">{{ 'admin.video_hint' | translate }}</small>
         </div>
         
-        <div *ngIf="selectedMatch.match_video_url && editVideoUrl !== selectedMatch.match_video_url" class="alert alert-info">
-          <strong>Link hiện tại:</strong><br>
-          <a [href]="selectedMatch.match_video_url" target="_blank">{{ selectedMatch.match_video_url }}</a>
+        <div *ngIf="selectedMatch.match_video_url" class="alert alert-info">
+          <strong>{{ 'admin.current_links' | translate }}:</strong><br>
+          <div *ngFor="let url of selectedMatch.match_video_url.split('\n'); let i = index">
+            <a [href]="url.trim()" target="_blank">Video {{ i + 1 }}: {{ url.trim() }}</a>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeUpdateVideoModal()">Hủy</button>
+        <button type="button" class="btn btn-secondary" (click)="closeUpdateVideoModal()">{{ 'btn.cancel' | translate }}</button>
         <button type="button" class="btn btn-primary" (click)="submitUpdateVideo()">
-          <i class="bi bi-save"></i> Lưu
+          <i class="bi bi-save"></i> {{ 'btn.update' | translate }}
         </button>
       </div>
     </div>

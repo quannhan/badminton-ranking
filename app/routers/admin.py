@@ -688,8 +688,9 @@ def update_match_video(
     if match.status != 'APPROVED':
         raise HTTPException(status_code=400, detail="Can only update video for completed matches")
     
-    # Cập nhật link video
-    match.match_video_url = video_data.get('match_video_url', None) or None
+    # Cập nhật link video (có thể chứa nhiều link phân cách bởi \n)
+    video_url = video_data.get('match_video_url', '').strip()
+    match.match_video_url = video_url if video_url else None
     match.updated_at = datetime.utcnow()
     
     db.commit()
