@@ -84,7 +84,6 @@ export const TRANSLATIONS: Record<'vi' | 'en', Record<string, string>> = {
     'form.team_wins': 'thắng',
     
     // Stake values
-    'stake.water_bet': 'Kèo nước',
     'stake.points': 'điểm',
     
     // Common
@@ -182,11 +181,11 @@ export const TRANSLATIONS: Record<'vi' | 'en', Record<string, string>> = {
     'scoring.winner_gets': 'Người THẮNG nhận',
     'scoring.loser_gets': 'Người THUA nhận',
     'scoring.description': 'Mô tả',
-    'scoring.example_low': 'Trận đấu kèo nước (mức thấp nhất)',
+    'scoring.example_low': 'Trận đấu với điểm cược 5 (mức thấp nhất)',
     'scoring.example_medium': 'Trận đấu với điểm cược 5 (mức trung bình)',
     'scoring.example_high': 'Trận đấu với điểm cược 10 (mức cao)',
     'scoring.detailed_example': 'Ví dụ chi tiết:',
-    'scoring.water_match': 'Kèo nước (Đơn nam):',
+    'scoring.low_match': 'Trận đấu 5 điểm (Đơn nam):',
     'scoring.vs': 'vs',
     'scoring.wins': 'thắng:',
     'scoring.loses': 'thua:',
@@ -329,7 +328,6 @@ export const TRANSLATIONS: Record<'vi' | 'en', Record<string, string>> = {
     'form.team_wins': 'wins',
     
     // Stake values
-    'stake.water_bet': 'Water Bet',
     'stake.points': 'points',
     
     // Common
@@ -427,11 +425,11 @@ export const TRANSLATIONS: Record<'vi' | 'en', Record<string, string>> = {
     'scoring.winner_gets': 'WINNER gets',
     'scoring.loser_gets': 'LOSER gets',
     'scoring.description': 'Description',
-    'scoring.example_low': 'Water bet match (lowest level)',
+    'scoring.example_low': '5-point match (lowest level)',
     'scoring.example_medium': 'Match with 5 stake (medium level)',
     'scoring.example_high': 'Match with 10 stake (high level)',
     'scoring.detailed_example': 'Detailed Example:',
-    'scoring.water_match': 'Water bet (Singles):',
+    'scoring.low_match': '5-point match (Singles):',
     'scoring.vs': 'vs',
     'scoring.wins': 'wins:',
     'scoring.loses': 'loses:',

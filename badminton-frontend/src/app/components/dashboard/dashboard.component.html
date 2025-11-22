@@ -580,7 +580,7 @@
         <div *ngIf="selectedMatch.match_video_url" class="alert alert-info">
           <strong>{{ 'admin.current_links' | translate }}:</strong><br>
           <div *ngFor="let url of selectedMatch.match_video_url.split('\n'); let i = index">
-            <a [href]="url.trim()" target="_blank">Video {{ i + 1 }}: {{ url.trim() }}</a>
+            <a [href]="url.trim()" target="_blank">Sec {{ i + 1 }}: {{ url.trim() }}</a>
           </div>
         </div>
       </div>

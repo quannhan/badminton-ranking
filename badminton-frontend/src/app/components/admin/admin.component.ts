@@ -40,7 +40,6 @@ export class AdminComponent implements OnInit {
   ];
 
   stakeValues = [
-    { value: 2, labelKey: 'stake.water_bet' },
     { value: 5, label: '5' },
     { value: 10, label: '10' }
   ];
