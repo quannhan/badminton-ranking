@@ -118,11 +118,7 @@
             <label class="form-label">{{ 'form.stake_value' | translate }}</label>
             <select class="form-select" formControlName="stake_value">
               <option *ngFor="let stake of stakeValues" [value]="stake.value">
-                <ng-container *ngIf="stake.labelKey; else plainLabel">
-                  {{ stake.value }} ({{ stake.labelKey | translate }})
-                </ng-container>
-                <ng-template #plainLabel>{{ stake.label }}</ng-template>
-                 {{ 'stake.points' | translate }}
+                {{ stake.label }} {{ 'stake.points' | translate }}
               </option>
             </select>
           </div>
