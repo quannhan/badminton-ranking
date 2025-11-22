@@ -701,3 +701,78 @@ def update_match_video(
         "match_id": match_id,
         "match_video_url": match.match_video_url
     }
+
+@router.post("/cancel-match-result/{match_id}")
+def cancel_match_result(
+    match_id: int,
+    current_admin: models.User = Depends(auth.get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """Hủy bỏ kết quả trận đấu và hoàn trả điểm - chỉ super admin"""
+    
+    # Kiểm tra super admin
+    SUPER_ADMIN_EMAIL = "thaiquan251198@gmail.com"
+    if current_admin.email != SUPER_ADMIN_EMAIL:
+        raise HTTPException(status_code=403, detail="Only super admin can cancel match results")
+    
+    # Lấy trận đấu
+    match = db.query(models.MatchReport).filter(models.MatchReport.match_id == match_id).first()
+    
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+    
+    # Chỉ có thể hủy trận đấu đã APPROVED
+    if match.status != 'APPROVED':
+        raise HTTPException(status_code=400, detail="Can only cancel APPROVED matches")
+    
+    # Lấy tất cả players
+    players = db.query(models.MatchPlayer).filter(
+        models.MatchPlayer.match_id == match_id
+    ).all()
+    
+    # Kiểm tra xem trận đấu đã có kết quả chưa
+    has_result = any(p.result != 'PENDING' for p in players)
+    
+    if not has_result:
+        raise HTTPException(status_code=400, detail="Match has no results to cancel")
+    
+    # Hoàn trả điểm cho các players
+    for player in players:
+        if player.points_earned != 0:
+            # Trừ điểm đã cộng
+            user = db.query(models.User).filter(models.User.user_id == player.user_id).first()
+            
+            if user:
+                user.total_points -= player.points_earned
+                
+                if match.match_type == 'SINGLES':
+                    user.singles_points -= player.points_earned
+                else:
+                    user.doubles_points -= player.points_earned
+                
+                # Tạo thông báo
+                notification = models.Notification(
+                    user_id=player.user_id,
+                    type='MATCH_RESULT_CANCELLED',
+                    message=f'Kết quả trận đấu #{match_id} đã bị hủy bởi super admin. Điểm {player.points_earned:+d} đã được hoàn trả.'
+                )
+                db.add(notification)
+        
+        # Reset kết quả về PENDING
+        player.result = 'PENDING'
+        player.points_earned = 0
+    
+    # Xóa video URL (optional - có thể giữ lại)
+    # match.match_video_url = None
+    
+    match.updated_at = datetime.utcnow()
+    match.admin_notes = f'Kết quả đã bị hủy bởi super admin {current_admin.display_name} vào {datetime.utcnow()}'
+    
+    db.commit()
+    
+    return {
+        "message": "Match result cancelled successfully. Points have been refunded.",
+        "match_id": match_id,
+        "players_affected": len(players)
+    }
+

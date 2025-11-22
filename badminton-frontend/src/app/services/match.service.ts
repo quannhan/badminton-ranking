@@ -87,4 +87,9 @@ export class MatchService {
   updateMatchVideo(matchId: number, videoUrl: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/admin/update-match-video/${matchId}`, { match_video_url: videoUrl });
   }
+
+  // Cancel match result - super admin only
+  cancelMatchResult(matchId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/admin/cancel-match-result/${matchId}`, {});
+  }
 }

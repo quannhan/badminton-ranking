@@ -121,9 +121,14 @@
                 <span *ngIf="!match.match_video_url" class="text-muted">-</span>
               </td>
               <td *ngIf="currentUser?.is_admin" class="action-column">
-                <button class="btn btn-sm btn-outline-primary" (click)="openUpdateVideoModal(match)" [title]="'Update video links'">
-                  <i class="bi bi-camera-video"></i> <span class="d-none d-xl-inline">Cập nhật</span>
-                </button>
+                <div class="d-flex gap-1 flex-wrap">
+                  <button class="btn btn-sm btn-outline-primary" (click)="openUpdateVideoModal(match)" [title]="'Update video links'">
+                    <i class="bi bi-camera-video"></i> <span class="d-none d-xl-inline">Video</span>
+                  </button>
+                  <button *ngIf="isSuperAdmin()" class="btn btn-sm btn-outline-danger" (click)="cancelMatchResult(match)" [title]="'Cancel match result'">
+                    <i class="bi bi-x-circle"></i> <span class="d-none d-xl-inline">Hủy</span>
+                  </button>
+                </div>
               </td>
             </tr>
             <tr *ngIf="completedMatches.length === 0">

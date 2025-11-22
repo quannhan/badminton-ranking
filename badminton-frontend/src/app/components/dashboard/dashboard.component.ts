@@ -376,4 +376,26 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+
+  isSuperAdmin(): boolean {
+    return this.currentUser?.email === 'thaiquan251198@gmail.com';
+  }
+
+  cancelMatchResult(match: Match): void {
+    if (!confirm('Bạn có chắc chắn muốn HỦY BỎ kết quả trận đấu này? Điểm sẽ được hoàn trả cho tất cả người chơi.')) {
+      return;
+    }
+
+    this.matchService.cancelMatchResult(match.match_id).subscribe({
+      next: () => {
+        alert('Đã hủy bỏ kết quả trận đấu thành công! Điểm đã được hoàn trả.');
+        this.loadCompletedMatches();
+        this.refreshCurrentUser();
+      },
+      error: (error) => {
+        console.error('Error cancelling match result:', error);
+        alert('Lỗi: ' + (error.error?.detail || 'Unknown error'));
+      }
+    });
+  }
 }
