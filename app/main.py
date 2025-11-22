@@ -42,6 +42,8 @@ app.include_router(users.router)
 app.include_router(matches.router)
 app.include_router(admin.router)
 app.include_router(rankings.router)
+from .routers import tournament
+app.include_router(tournament.router)
 
 @app.get("/")
 def root():

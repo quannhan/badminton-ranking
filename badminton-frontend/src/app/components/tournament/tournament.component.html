@@ -1,0 +1,81 @@
+<div class="container mt-4">
+  <!-- Coming Soon Banner -->
+  <div *ngIf="!tournamentRules || tournamentRules.trim() === ''" class="row">
+    <div class="col-12">
+      <div class="coming-soon-banner">
+        <div class="banner-content">
+          <i class="bi bi-trophy-fill trophy-icon"></i>
+          <h1 class="display-3 fw-bold mb-3">{{ 'tournament.title' | translate }}</h1>
+          <h2 class="coming-soon-text">{{ 'tournament.coming_soon' | translate }}</h2>
+          <p class="lead mt-4">{{ 'tournament.stay_tuned' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tournament Rules Display -->
+  <div *ngIf="tournamentRules && tournamentRules.trim() !== ''" class="row">
+    <div class="col-12">
+      <div class="tournament-header">
+        <i class="bi bi-trophy-fill me-3"></i>
+        <h2>{{ 'tournament.title' | translate }}</h2>
+      </div>
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="rules-content" [innerHTML]="tournamentRules"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Super Admin Controls -->
+  <div *ngIf="isSuperAdmin()" class="row mt-4">
+    <div class="col-12">
+      <div class="card bg-light">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-gear-fill"></i> {{ 'tournament.admin_controls' | translate }}
+          </h5>
+          <button class="btn btn-primary" (click)="openRulesEditor()">
+            <i class="bi bi-pencil-square"></i> {{ 'tournament.edit_rules' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Rules Editor Modal -->
+<div class="modal" [class.show]="showRulesEditor" [style.display]="showRulesEditor ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-pencil-square"></i> {{ 'tournament.edit_rules' | translate }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeRulesEditor()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">{{ 'tournament.rules_content' | translate }}</label>
+          <textarea 
+            class="form-control" 
+            rows="15" 
+            [(ngModel)]="editRules"
+            placeholder="Nhập thể lệ giải đấu... Có thể dùng HTML để format"></textarea>
+          <small class="text-muted">{{ 'tournament.html_hint' | translate }}</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeRulesEditor()">
+          {{ 'btn.cancel' | translate }}
+        </button>
+        <button type="button" class="btn btn-primary" (click)="saveRules()" [disabled]="loading">
+          <i class="bi bi-save"></i> {{ 'btn.update' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" [class.show]="showRulesEditor" *ngIf="showRulesEditor"></div>

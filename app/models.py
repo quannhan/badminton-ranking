@@ -109,3 +109,11 @@ class PasswordResetRequest(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     resolved_at = Column(DateTime)
     resolved_by = Column(Integer, ForeignKey('users.user_id'))
+
+class TournamentSettings(Base):
+    __tablename__ = "tournament_settings"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    rules = Column(Text)  # HTML content for tournament rules
+    updated_at = Column(DateTime, default=datetime.utcnow)
+    updated_by = Column(Integer, ForeignKey('users.user_id'))

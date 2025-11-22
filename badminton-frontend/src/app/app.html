@@ -15,6 +15,12 @@
         <li class="nav-item">
           <a class="nav-link" routerLink="/scoring-rules" routerLinkActive="active">{{ 'nav.scoring_rules' | translate }}</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link tournament-link" routerLink="/tournament" routerLinkActive="active">
+            <span class="trophy-icon">🏆</span> {{ 'nav.tournament' | translate }}
+            <span class="badge bg-danger ms-1 pulse">{{ 'nav.new' | translate }}</span>
+          </a>
+        </li>
         <li class="nav-item" *ngIf="currentUser.is_admin">
           <a class="nav-link" routerLink="/admin" routerLinkActive="active">{{ 'nav.admin' | translate }}</a>
         </li>
@@ -43,7 +49,7 @@
           <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <img 
               [src]="getAvatarUrl()" 
-              [alt]="currentUser?.display_name"
+              [alt]="currentUser.display_name"
               class="rounded-circle me-2"
               style="width: 32px; height: 32px; object-fit: cover;"
             >

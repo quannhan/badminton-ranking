@@ -1,0 +1,161 @@
+.coming-soon-banner {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  color: white;
+  padding: 100px 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 255, 255, 0.05) 10px,
+      rgba(255, 255, 255, 0.05) 20px
+    );
+    animation: slide 20s linear infinite;
+  }
+  
+  .banner-content {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .trophy-icon {
+    font-size: 5rem;
+    color: #fbbf24;
+    animation: bounce 2s ease-in-out infinite;
+  }
+  
+  .coming-soon-text {
+    font-size: 3rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    background: linear-gradient(90deg, #fbbf24, #f59e0b, #fbbf24);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient 3s ease infinite;
+  }
+}
+
+.tournament-header {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  
+  i {
+    font-size: 3rem;
+    color: #fbbf24;
+  }
+  
+  h2 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+}
+
+.rules-content {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  
+  :deep(h1), :deep(h2), :deep(h3), :deep(h4), :deep(h5), :deep(h6) {
+    color: #dc2626;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  :deep(p) {
+    margin-bottom: 1rem;
+  }
+  
+  :deep(ul), :deep(ol) {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+  }
+  
+  :deep(strong) {
+    color: #991b1b;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes slide {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(50%, 50%);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .coming-soon-banner {
+    padding: 60px 20px;
+    
+    .trophy-icon {
+      font-size: 3rem;
+    }
+    
+    h1 {
+      font-size: 2rem;
+    }
+    
+    .coming-soon-text {
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+    }
+  }
+  
+  .tournament-header {
+    padding: 20px;
+    
+    i {
+      font-size: 2rem;
+    }
+    
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+  
+  .rules-content {
+    font-size: 0.95rem;
+  }
+}

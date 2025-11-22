@@ -1,0 +1,34 @@
+// Tournament navbar link styles
+.tournament-link {
+  position: relative;
+  font-weight: 600;
+  
+  .trophy-icon {
+    font-size: 1.2rem;
+    animation: bounce 2s ease-in-out infinite;
+  }
+  
+  .pulse {
+    animation: pulse 2s ease-in-out infinite;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
