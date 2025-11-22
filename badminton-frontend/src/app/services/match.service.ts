@@ -92,4 +92,9 @@ export class MatchService {
   cancelMatchResult(matchId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/admin/cancel-match-result/${matchId}`, {});
   }
+
+  // Delete match - all admins
+  deleteMatch(matchId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/admin/delete-match/${matchId}`);
+  }
 }

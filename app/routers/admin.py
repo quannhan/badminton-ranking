@@ -776,3 +776,74 @@ def cancel_match_result(
         "players_affected": len(players)
     }
 
+@router.delete("/delete-match/{match_id}")
+def delete_match(
+    match_id: int,
+    current_admin: models.User = Depends(auth.get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """Xóa trận đấu - tất cả admin có quyền"""
+    
+    # Lấy trận đấu
+    match = db.query(models.MatchReport).filter(models.MatchReport.match_id == match_id).first()
+    
+    if not match:
+        raise HTTPException(status_code=404, detail="Match not found")
+    
+    # Lấy tất cả players
+    players = db.query(models.MatchPlayer).filter(
+        models.MatchPlayer.match_id == match_id
+    ).all()
+    
+    # Kiểm tra nếu trận đấu đã APPROVED và có kết quả, cần hoàn trả điểm
+    if match.status == 'APPROVED':
+        has_result = any(p.result != 'PENDING' for p in players)
+        
+        if has_result:
+            # Hoàn trả điểm cho các players
+            for player in players:
+                if player.points_earned != 0:
+                    user = db.query(models.User).filter(models.User.user_id == player.user_id).first()
+                    
+                    if user:
+                        user.total_points -= player.points_earned
+                        
+                        if match.match_type == 'SINGLES':
+                            user.singles_points -= player.points_earned
+                        else:
+                            user.doubles_points -= player.points_earned
+                        
+                        # Tạo thông báo
+                        notification = models.Notification(
+                            user_id=player.user_id,
+                            type='MATCH_DELETED',
+                            message=f'Trận đấu #{match_id} đã bị xóa bởi admin. Điểm {player.points_earned:+d} đã được hoàn trả.'
+                        )
+                        db.add(notification)
+        else:
+            # Trận chưa có kết quả, chỉ thông báo
+            for player in players:
+                notification = models.Notification(
+                    user_id=player.user_id,
+                    type='MATCH_DELETED',
+                    message=f'Trận đấu #{match_id} đã bị hủy bởi admin.'
+                )
+                db.add(notification)
+    
+    # Xóa match_players trước (foreign key constraint)
+    for player in players:
+        db.delete(player)
+    
+    # Xóa match_report
+    db.delete(match)
+    
+    db.commit()
+    
+    return {
+        "message": "Match deleted successfully",
+        "match_id": match_id,
+        "status": match.status,
+        "players_affected": len(players)
+    }
+
+

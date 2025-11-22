@@ -204,13 +204,22 @@
                 </span>
               </td>
               <td *ngIf="currentUser?.is_admin">
-                <button 
-                  *ngIf="match.status === 'APPROVED' && isMatchPending(match)"
-                  class="btn btn-sm btn-primary me-2"
-                  (click)="openUpdateResultModal(match)">
-                  <i class="bi bi-pencil"></i> {{ 'btn.update_result' | translate }}
-                </button>
-                <span *ngIf="match.status === 'PENDING'" class="badge bg-warning">
+                <div class="d-flex gap-1 flex-wrap">
+                  <button 
+                    *ngIf="match.status === 'APPROVED' && isMatchPending(match)"
+                    class="btn btn-sm btn-primary"
+                    (click)="openUpdateResultModal(match)"
+                    [title]="'Update match result'">
+                    <i class="bi bi-pencil"></i> <span class="d-none d-lg-inline">{{ 'btn.update_result' | translate }}</span>
+                  </button>
+                  <button 
+                    class="btn btn-sm btn-outline-danger"
+                    (click)="deleteMatch(match)"
+                    [title]="'Delete match'">
+                    <i class="bi bi-trash"></i> <span class="d-none d-xl-inline">Xóa</span>
+                  </button>
+                </div>
+                <span *ngIf="match.status === 'PENDING'" class="badge bg-warning mt-1">
                   {{ 'dashboard.waiting_approval' | translate }}
                 </span>
               </td>

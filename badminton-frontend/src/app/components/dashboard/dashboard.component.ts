@@ -392,8 +392,32 @@ export class DashboardComponent implements OnInit {
         this.loadCompletedMatches();
         this.refreshCurrentUser();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error cancelling match result:', error);
+        alert('Lỗi: ' + (error.error?.detail || 'Unknown error'));
+      }
+    });
+  }
+
+  deleteMatch(match: Match): void {
+    const hasResult = match.players?.some(p => p.result !== 'PENDING');
+    const confirmMsg = hasResult 
+      ? 'Bạn có chắc chắn muốn XÓA trận đấu này? Điểm sẽ được hoàn trả cho tất cả người chơi.'
+      : 'Bạn có chắc chắn muốn XÓA trận đấu này?';
+    
+    if (!confirm(confirmMsg)) {
+      return;
+    }
+
+    this.matchService.deleteMatch(match.match_id).subscribe({
+      next: () => {
+        alert('Đã xóa trận đấu thành công!');
+        this.loadPendingMatches();
+        this.loadCompletedMatches();
+        this.refreshCurrentUser();
+      },
+      error: (error: any) => {
+        console.error('Error deleting match:', error);
         alert('Lỗi: ' + (error.error?.detail || 'Unknown error'));
       }
     });

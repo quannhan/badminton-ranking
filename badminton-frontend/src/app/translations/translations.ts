@@ -57,6 +57,7 @@ export const TRANSLATIONS: Record<'vi' | 'en', Record<string, string>> = {
     'btn.create': 'Tạo Kèo',
     'btn.close': 'Đóng',
     'btn.cancel_result': 'Hủy bỏ kết quả',
+    'btn.delete_match': 'Xóa trận đấu',
     
     // Admin
     'admin.title': 'Quản trị Hệ Thống',
@@ -72,6 +73,8 @@ export const TRANSLATIONS: Record<'vi' | 'en', Record<string, string>> = {
     'admin.current_links': 'Link hiện tại',
     'admin.cancel_result': 'Hủy bỏ kết quả',
     'admin.cancel_confirm': 'Bạn có chắc chắn muốn hủy bỏ kết quả trận đấu này? Điểm sẽ được hoàn trả.',
+    'admin.delete_match': 'Xóa trận đấu',
+    'admin.delete_confirm': 'Bạn có chắc chắn muốn xóa trận đấu này?',
     
     // Forms
     'form.match_type': 'Loại trận đấu',
@@ -304,6 +307,7 @@ export const TRANSLATIONS: Record<'vi' | 'en', Record<string, string>> = {
     'btn.create': 'Create Match',
     'btn.close': 'Close',
     'btn.cancel_result': 'Cancel Result',
+    'btn.delete_match': 'Delete Match',
     
     // Admin
     'admin.title': 'System Administration',
@@ -319,6 +323,8 @@ export const TRANSLATIONS: Record<'vi' | 'en', Record<string, string>> = {
     'admin.current_links': 'Current Links',
     'admin.cancel_result': 'Cancel Result',
     'admin.cancel_confirm': 'Are you sure you want to cancel this match result? Points will be refunded.',
+    'admin.delete_match': 'Delete Match',
+    'admin.delete_confirm': 'Are you sure you want to delete this match?',
     
     // Forms
     'form.match_type': 'Match Type',
