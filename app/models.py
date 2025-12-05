@@ -15,7 +15,7 @@ class User(Base):
     display_name = Column(String, nullable=False)
     gender = Column(String(1))  # 'M' for Male, 'F' for Female
     avatar = Column(String)  # URL or path to avatar image
-    level = Column(String(1), default='C')
+    level = Column(String(1), default='D')  # 'D' for Beginner, 'C' for New, 'B' for Intermediate, 'A' for Advanced
     total_points = Column(Integer, default=0)
     singles_points = Column(Integer, default=0)
     doubles_points = Column(Integer, default=0)

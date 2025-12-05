@@ -28,7 +28,7 @@ export class RankingsComponent implements OnInit {
     { value: 'DOUBLES_MIXED', labelKey: 'match.doubles_mixed' }
   ];
 
-  levels = ['A', 'B', 'C'];
+  levels = ['A', 'B', 'C', 'D'];
 
   constructor(private rankingService: RankingService) {}
 

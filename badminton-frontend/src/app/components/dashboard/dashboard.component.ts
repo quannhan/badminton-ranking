@@ -71,9 +71,9 @@ export class DashboardComponent implements OnInit {
     this.loading = true;
     this.authService.getAllUsers().subscribe({
       next: (users) => {
-        // Sort by level (A > B > C) then by total_points descending
+        // Sort by level (A > B > C > D) then by total_points descending
         this.allUsers = users.sort((a, b) => {
-          const levelOrder: { [key: string]: number } = { 'A': 1, 'B': 2, 'C': 3 };
+          const levelOrder: { [key: string]: number } = { 'A': 1, 'B': 2, 'C': 3, 'D': 4 };
           const levelDiff = (levelOrder[a.level] || 99) - (levelOrder[b.level] || 99);
           if (levelDiff !== 0) return levelDiff;
           return b.total_points - a.total_points;

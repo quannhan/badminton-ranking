@@ -14,7 +14,7 @@ router = APIRouter(prefix="/rankings", tags=["Rankings"])
 @router.get("/overall/{level}", response_model=List[schemas.RankingResponse])
 def get_overall_rankings(level: str, db: Session = Depends(get_db)):
     """Bảng xếp hạng tổng theo level"""
-    if level not in ['A', 'B', 'C', 'ALL']:
+    if level not in ['A', 'B', 'C', 'D', 'ALL']:
         raise HTTPException(status_code=400, detail="Invalid level")
     
     query = db.query(
@@ -48,7 +48,7 @@ def get_specific_rankings(match_type: str, level: str, db: Session = Depends(get
     if match_type not in valid_types:
         raise HTTPException(status_code=400, detail="Invalid match type")
     
-    if level not in ['A', 'B', 'C', 'ALL']:
+    if level not in ['A', 'B', 'C', 'D', 'ALL']:
         raise HTTPException(status_code=400, detail="Invalid level")
     
     # Get current month
@@ -152,7 +152,7 @@ def reset_monthly_rankings(
     
     # Create new rankings for all types and levels
     match_types = ['SINGLES', 'DOUBLES_MEN', 'DOUBLES_WOMEN', 'DOUBLES_MIXED']
-    levels = ['A', 'B', 'C']
+    levels = ['A', 'B', 'C', 'D']
     
     for match_type in match_types:
         for level in levels:

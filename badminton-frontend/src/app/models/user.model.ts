@@ -6,7 +6,7 @@ export interface User {
   gender?: 'M' | 'F';
   avatar?: string;
   phone_number?: string;
-  level: 'A' | 'B' | 'C';
+  level: 'A' | 'B' | 'C' | 'D';
   total_points: number;
   singles_points: number;
   doubles_points: number;
@@ -29,7 +29,7 @@ export interface RegisterRequest {
   password: string;
   display_name: string;
   phone_number?: string;
-  level: 'A' | 'B' | 'C';
+  level: 'A' | 'B' | 'C' | 'D';
 }
 
 export interface LoginResponse {
