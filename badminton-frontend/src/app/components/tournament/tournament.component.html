@@ -1,81 +1,132 @@
-<div class="container mt-4">
-  <!-- Coming Soon Banner -->
-  <div *ngIf="!tournamentRules || tournamentRules.trim() === ''" class="row">
-    <div class="col-12">
-      <div class="coming-soon-banner">
-        <div class="banner-content">
-          <i class="bi bi-trophy-fill trophy-icon"></i>
-          <h1 class="display-3 fw-bold mb-3">{{ 'tournament.title' | translate }}</h1>
-          <h2 class="coming-soon-text">{{ 'tournament.coming_soon' | translate }}</h2>
-          <p class="lead mt-4">{{ 'tournament.stay_tuned' | translate }}</p>
-        </div>
-      </div>
+<div class="tournament-page">
+  <!-- Header / Banner -->
+  <header class="tournament-header-banner">
+    <div class="header-content">
+      <h1 class="header-title">Metfone Badminton Open</h1>
+      <p class="header-subtitle">{{ 'tournament.title' | translate }}</p>
     </div>
-  </div>
+  </header>
 
-  <!-- Tournament Rules Display -->
-  <div *ngIf="tournamentRules && tournamentRules.trim() !== ''" class="row">
-    <div class="col-12">
-      <div class="tournament-header">
-        <i class="bi bi-trophy-fill me-3"></i>
-        <h2>{{ 'tournament.title' | translate }}</h2>
-      </div>
-
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <div class="rules-content" [innerHTML]="tournamentRules"></div>
+  <!-- Language & Admin Controls Bar -->
+  <div class="controls-bar">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <!-- Language Toggle -->
+        <div class="language-toggle">
+          <button 
+            [class.active]="currentLanguage === 'vi'" 
+            (click)="switchLanguage('vi')"
+            class="lang-btn">
+            Tiếng Việt 🇻🇳
+          </button>
+          <button 
+            [class.active]="currentLanguage === 'en'" 
+            (click)="switchLanguage('en')"
+            class="lang-btn">
+            English 🇬🇧
+          </button>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Super Admin Controls -->
-  <div *ngIf="isSuperAdmin()" class="row mt-4">
-    <div class="col-12">
-      <div class="card bg-light">
-        <div class="card-body">
-          <h5 class="card-title">
-            <i class="bi bi-gear-fill"></i> {{ 'tournament.admin_controls' | translate }}
-          </h5>
-          <button class="btn btn-primary" (click)="openRulesEditor()">
-            <i class="bi bi-pencil-square"></i> {{ 'tournament.edit_rules' | translate }}
+        <!-- Super Admin Controls -->
+        <div *ngIf="isSuperAdmin()" class="mt-2 mt-md-0">
+          <button class="btn btn-sm btn-primary" (click)="openRulesEditor()">
+            <i class="bi bi-pencil-square me-2"></i>
+            {{ 'tournament.edit_rules' | translate }}
           </button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Main Content -->
+  <main class="tournament-content">
+    <div class="container">
+      
+      <!-- Coming Soon Banner (if no rules) -->
+      <div class="coming-soon-display" *ngIf="!tournamentRules || tournamentRules.trim() === ''">
+        <div class="trophy-icon-large">🏆</div>
+        <h1 class="display-3 fw-bold mb-3">{{ 'tournament.coming_soon' | translate }}</h1>
+        <p class="lead text-muted">{{ 'tournament.stay_tuned' | translate }}</p>
+      </div>
+
+      <!-- Tournament Rules Display -->
+      <div class="rules-card" *ngIf="tournamentRules && tournamentRules.trim() !== ''">
+        <!-- Vietnamese Content -->
+        <div class="rules-content fade-in" *ngIf="currentLanguage === 'vi'" [innerHTML]="getVietnameseRules()"></div>
+        
+        <!-- English Content -->
+        <div class="rules-content fade-in" *ngIf="currentLanguage === 'en'" [innerHTML]="getEnglishRules()"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="tournament-footer">
+    <p class="mb-0">&copy; 2025 Metfone Badminton Open. All rights reserved.</p>
+  </footer>
 </div>
 
-<!-- Rules Editor Modal -->
-<div class="modal" [class.show]="showRulesEditor" [style.display]="showRulesEditor ? 'block' : 'none'" tabindex="-1">
-  <div class="modal-dialog modal-lg">
+<!-- Rules Editor Modal (Super Admin Only) -->
+<div class="modal" [class.show]="showRulesEditor" [style.display]="showRulesEditor ? 'block' : 'none'" tabindex="-1" *ngIf="isSuperAdmin()">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">
-          <i class="bi bi-pencil-square"></i> {{ 'tournament.edit_rules' | translate }}
+          <i class="bi bi-pencil-square me-2"></i>
+          {{ 'tournament.edit_rules' | translate }}
         </h5>
-        <button type="button" class="btn-close" (click)="closeRulesEditor()"></button>
+        <button type="button" class="btn-close btn-close-white" (click)="closeRulesEditor()"></button>
       </div>
       <div class="modal-body">
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle me-2"></i>
+          <strong>Hướng dẫn:</strong> Nhập HTML hoàn chỉnh của thể lệ giải đấu. 
+          Hệ thống sẽ tự động tách nội dung Tiếng Việt và English dựa trên 
+          <code>id="content-vi"</code> và <code>id="content-en"</code>.
+        </div>
+        
         <div class="mb-3">
-          <label class="form-label">{{ 'tournament.rules_content' | translate }}</label>
+          <label class="form-label fw-bold">{{ 'tournament.rules_content' | translate }}</label>
           <textarea 
-            class="form-control" 
-            rows="15" 
+            class="form-control font-monospace" 
+            rows="20" 
             [(ngModel)]="editRules"
-            placeholder="Nhập thể lệ giải đấu... Có thể dùng HTML để format"></textarea>
-          <small class="text-muted">{{ 'tournament.html_hint' | translate }}</small>
+            placeholder="Paste complete HTML content here..."
+            style="font-size: 0.875rem;">
+          </textarea>
+          <small class="text-muted d-block mt-2">
+            {{ 'tournament.html_hint' | translate }}
+          </small>
+        </div>
+
+        <!-- Preview -->
+        <div class="mt-4">
+          <h6 class="fw-bold">Preview:</h6>
+          <div class="border rounded p-3 bg-light" style="max-height: 400px; overflow-y: auto;">
+            <div [innerHTML]="editRules"></div>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="closeRulesEditor()">
+          <i class="bi bi-x-circle me-2"></i>
           {{ 'btn.cancel' | translate }}
         </button>
         <button type="button" class="btn btn-primary" (click)="saveRules()" [disabled]="loading">
-          <i class="bi bi-save"></i> {{ 'btn.update' | translate }}
+          <i class="bi bi-save me-2"></i>
+          <span *ngIf="!loading">{{ 'btn.update' | translate }}</span>
+          <span *ngIf="loading">
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Đang lưu...
+          </span>
         </button>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade" [class.show]="showRulesEditor" *ngIf="showRulesEditor"></div>
+
 <div class="modal-backdrop" [class.show]="showRulesEditor" *ngIf="showRulesEditor"></div>

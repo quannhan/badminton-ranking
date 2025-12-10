@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { TournamentService } from '../../services/tournament.service';
+import { LanguageService } from '../../services/language.service';
 import { User } from '../../models/user.model';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
@@ -19,21 +20,32 @@ export class TournamentComponent implements OnInit {
   showRulesEditor = false;
   editRules: string = '';
   loading = false;
+  currentLanguage: 'vi' | 'en' = 'vi';
 
   constructor(
     private authService: AuthService,
-    private tournamentService: TournamentService
+    private tournamentService: TournamentService,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
     this.authService.currentUser.subscribe(user => {
       this.currentUser = user;
     });
+    
+    this.languageService.currentLanguage$.subscribe(lang => {
+      this.currentLanguage = lang;
+    });
+    
     this.loadTournamentRules();
   }
 
   isSuperAdmin(): boolean {
     return this.currentUser?.email === 'thaiquan251198@gmail.com';
+  }
+
+  switchLanguage(lang: 'vi' | 'en'): void {
+    this.languageService.setLanguage(lang);
   }
 
   loadTournamentRules(): void {
@@ -50,14 +62,40 @@ export class TournamentComponent implements OnInit {
     });
   }
 
+  getVietnameseRules(): string {
+    if (!this.tournamentRules) return '';
+    
+    // Extract Vietnamese content from id="content-vi"
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(this.tournamentRules, 'text/html');
+    const viContent = doc.getElementById('content-vi');
+    
+    return viContent ? viContent.innerHTML : this.tournamentRules;
+  }
+
+  getEnglishRules(): string {
+    if (!this.tournamentRules) return '';
+    
+    // Extract English content from id="content-en"
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(this.tournamentRules, 'text/html');
+    const enContent = doc.getElementById('content-en');
+    
+    return enContent ? enContent.innerHTML : this.tournamentRules;
+  }
+
   openRulesEditor(): void {
     this.editRules = this.tournamentRules;
     this.showRulesEditor = true;
+    // Disable body scroll when modal is open
+    document.body.style.overflow = 'hidden';
   }
 
   closeRulesEditor(): void {
     this.showRulesEditor = false;
     this.editRules = '';
+    // Re-enable body scroll
+    document.body.style.overflow = 'auto';
   }
 
   saveRules(): void {
@@ -73,6 +111,7 @@ export class TournamentComponent implements OnInit {
         this.tournamentRules = this.editRules;
         this.closeRulesEditor();
         this.loading = false;
+        this.loadTournamentRules(); // Reload to ensure sync
       },
       error: (error: any) => {
         console.error('Error updating tournament rules:', error);
